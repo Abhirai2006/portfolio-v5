@@ -1,0 +1,99 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "a11yChecks": true,
+      "settleMs": 2500,
+      "mustContain": [
+        "Abhishek Rai A",
+        "looking for ML internships",
+        "Customer Churn Intelligence System",
+        "MUSE Students Voice",
+        "Arthra",
+        "Ro-Bio",
+        "Earth &amp; Ethos",
+        "Churn Lab",
+        "not proven causes",
+        "Skip to the work",
+        "Breslau, 1912",
+        "https://github.com/Abhirai2006",
+        "https://www.linkedin.com/in/abhishek-rai-a-00067238b/",
+        "Abhishek opened 1.Nf3",
+        "ML work + Churn Lab",
+        "Products",
+        "Algorithms",
+        "Skills + Résumé",
+        "About Abhishek",
+        "Contact / Hire",
+        "match the Python model"
+      ],
+      "labCheck": true,
+      "chessCheck": true,
+      "reviewChecks": true
+    },
+    {
+      "path": "/resume",
+      "mustContain": [
+        "Abhishek Rai A",
+        "Seeking ML internships",
+        "Bluemind Solutions",
+        "Earth &amp; Ethos",
+        "Quick facts"
+      ],
+      "pdfMaxPages": 2
+    },
+    {
+      "path": "/reviews",
+      "mustContain": [
+        "Abhishek"
+      ]
+    },
+    {
+      "path": "/anime",
+      "mustContain": [
+        "anime"
+      ],
+      "settleMs": 2500
+    },
+    {
+      "path": "/thank-you",
+      "mustContain": [
+        "Abhishek"
+      ]
+    },
+    {
+      "path": "/projects/arthra",
+      "mustContain": [
+        "Arthra",
+        "Tally",
+        "tally-my-cents",
+        "Ep. 3"
+      ]
+    },
+    {
+      "path": "/projects/ro-bio",
+      "mustContain": [
+        "Ro-Bio",
+        "192",
+        "https://ro-bio.hub-muse.workers.dev/"
+      ]
+    },
+    {
+      "path": "/projects/earth-and-ethos",
+      "mustContain": [
+        "Earth &amp; Ethos",
+        "Paid client project",
+        "https://portfolio.earth-and-ethos.workers.dev/"
+      ]
+    },
+    {
+      "path": "/projects/customer-churn-intelligence-system",
+      "mustContain": [
+        "going public soon",
+        "Try the model live",
+        "telco-churn-intelligence-system",
+        "BreadcrumbList"
+      ]
+    }
+  ]
+}
