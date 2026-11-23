@@ -1,7 +1,7 @@
 import { Chess, type Move, type Square } from "chess.js";
 import type { ChapterId } from "./lines";
 import type { Kind } from "@/lib/projects";
-import type { PieceType } from "@/components/art/ChessPiece";
+import type { PieceType } from "@/sections/ChessPiece";
 
 /** The piece the visitor moves decides where the site goes (spec §12). */
 export const DESTINATIONS: Record<
@@ -84,7 +84,11 @@ export function parseSaved(raw: string | null): SavedGame | null {
     const s = JSON.parse(raw) as Partial<SavedGame> | null;
     if (!s || typeof s.fen !== "string") return null;
     if (!Array.isArray(s.moves) || !s.moves.every((m) => typeof m === "string")) return null;
-    if (!Array.isArray(s.last) || s.last.length !== 2 || !s.last.every((q) => typeof q === "string" && SQUARE.test(q))) {
+    if (
+      !Array.isArray(s.last) ||
+      s.last.length !== 2 ||
+      !s.last.every((q) => typeof q === "string" && SQUARE.test(q))
+    ) {
       return null;
     }
     new Chess(s.fen); // throws on an invalid position
