@@ -1,50 +1,38 @@
-import { useEffect, useState } from "react";
+/**
+ * Sub-page header in the HUD language of the homepage: `ABHISHEK'S WORLD — PLATE xx` on the left, the side
+ * rooms and the internship mail button on the right. Fixed, ink, prints away.
+ */
 import { Link } from "@tanstack/react-router";
-import { ThemeToggle } from "./ThemeToggle";
 import { mailto } from "@/lib/contact";
 
-export function Nav() {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 20);
-    on();
-    window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
-  }, []);
+export function Nav({ plate = "EXTRA" }: { plate?: string }) {
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all print:hidden ${
-        scrolled ? "backdrop-blur-md bg-background/80 border-b-2 border-line" : "bg-transparent"
-      }`}
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="flex items-center gap-2 font-display text-sm tracking-widest">
-          <span className="inline-block h-2 w-2 rounded-full bg-primary" />
-          <span className="font-display font-extrabold tracking-wide">ABHISHEK RAI A</span>
-          <span className="hidden text-muted-foreground sm:inline">· ML PORTFOLIO</span>
+    <header className="no-print fixed inset-x-0 top-0 z-50 border-b border-grey-2 bg-ink/90 backdrop-blur-sm print:hidden">
+      <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-[var(--gutter)] py-3 font-hud text-[11px]">
+        <Link to="/" className="text-paper">
+          ABHISHEK&apos;S WORLD <span className="text-grey-3">— {plate}</span>
         </Link>
-        <div className="flex items-center gap-3">
-          <Link
-            to="/reviews"
-            className="hidden sm:inline text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
-          >
+        <nav aria-label="Pages" className="flex items-center gap-4 sm:gap-6">
+          <Link to="/" hash="map" className="hidden text-grey-4 hover:text-paper sm:inline">
+            The board
+          </Link>
+          <Link to="/anime" className="hidden text-grey-4 hover:text-paper md:inline">
+            Anime
+          </Link>
+          <Link to="/reviews" className="hidden text-grey-4 hover:text-paper sm:inline">
             Reviews
           </Link>
-          <Link
-            to="/resume"
-            className="hidden sm:inline text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
-          >
+          <Link to="/resume" className="text-grey-4 hover:text-paper">
             Résumé
           </Link>
-          <ThemeToggle compact />
           <a
             href={mailto("internship")}
             aria-label="Email Abhishek about an internship"
-            className="rounded-full border-2 border-line bg-primary px-5 py-2 text-sm font-bold text-primary-foreground shadow-[3px_3px_0_var(--panel-shadow)] transition hover:-translate-y-0.5"
+            className="ink-btn !px-3 !py-1.5"
           >
             Hire me →
           </a>
-        </div>
+        </nav>
       </div>
     </header>
   );
