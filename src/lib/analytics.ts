@@ -32,7 +32,10 @@ export function track(name: EventName, label: string) {
       path: window.location.pathname,
       referrer: document.referrer ? new URL(document.referrer).hostname : null,
     })
-    .then(() => undefined, () => undefined);
+    .then(
+      () => undefined,
+      () => undefined,
+    );
 }
 
 /** Records one homepage visitor per browser session and returns the live total. */
