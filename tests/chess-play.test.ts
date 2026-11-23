@@ -1,6 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import { Chess } from "chess.js";
-import { DESTINATIONS, START_FEN, applyVisitorMove, parseSaved, whiteReply } from "@/lib/chess/play";
+import {
+  DESTINATIONS,
+  START_FEN,
+  applyVisitorMove,
+  parseSaved,
+  whiteReply,
+} from "@/lib/chess/play";
 
 describe("the piece decides the destination", () => {
   test("exactly the six agreed destinations", () => {
