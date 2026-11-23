@@ -2,10 +2,19 @@ import { expect, test } from "bun:test";
 import { PERSONAL_CONTEXT, RESUME_CONTEXT } from "@/lib/assistant-context";
 
 // Copied from the v4 chat route: the privacy boundaries must not change.
-const BOUNDARIES = "BOUNDARIES (do NOT volunteer these)\n- Do not share family details (father's name, relatives) or his phone number unless the visitor explicitly asks for contact info, in which case give only the email abhirai2006@gmail.com.\n- The \"A\" in Abhishek Rai A stands for Adakastala, a village in Kasaragod, Kerala. Mention only if asked about his name.\n- Never speculate beyond what's written here.";
+const BOUNDARIES =
+  "BOUNDARIES (do NOT volunteer these)\n- Do not share family details (father's name, relatives) or his phone number unless the visitor explicitly asks for contact info, in which case give only the email abhirai2006@gmail.com.\n- The \"A\" in Abhishek Rai A stands for Adakastala, a village in Kasaragod, Kerala. Mention only if asked about his name.\n- Never speculate beyond what's written here.";
 
 test("résumé context knows the v5 projects and the internship ask", () => {
-  for (const s of ["Ro-Bio", "Earth & Ethos", "paid", "Tally", "1.Nf3", "Marshall", "looking for ML internships"]) {
+  for (const s of [
+    "Ro-Bio",
+    "Earth & Ethos",
+    "paid",
+    "Tally",
+    "1.Nf3",
+    "Marshall",
+    "looking for ML internships",
+  ]) {
     expect(RESUME_CONTEXT).toContain(s);
   }
 });
