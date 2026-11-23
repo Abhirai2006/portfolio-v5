@@ -38,4 +38,8 @@ for (const [name, id] of FILES) {
     console.log(`FAILED  ${name}: ${err.message}`);
   }
 }
-console.log(failed ? `\n${failed} file(s) failed. Check that the old site is still online.` : "\nAll done. Commit public/media/ next.");
+console.log(
+  failed
+    ? `\n${failed} file(s) failed. Check that the old site is still online.`
+    : "\nAll done. Commit public/media/ next.",
+);
