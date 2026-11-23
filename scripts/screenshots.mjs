@@ -31,7 +31,10 @@ const settle = async (page, ms = 2500) => {
 const browser = await chromium.launch({ args: ["--use-gl=swiftshader", "--ignore-gpu-blocklist"] });
 
 // desktop
-const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 2 });
+const page = await browser.newPage({
+  viewport: { width: 1280, height: 900 },
+  deviceScaleFactor: 2,
+});
 await page.goto(URL, { waitUntil: "load" });
 await settle(page, 5000); // give the 3D background time to render
 await page.screenshot({ path: `${OUT}/01-hero.png` });
@@ -45,7 +48,11 @@ for (const [name, sel] of sections) {
 await page.close();
 
 // mobile hero
-const m = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true });
+const m = await browser.newPage({
+  viewport: { width: 390, height: 844 },
+  deviceScaleFactor: 2,
+  isMobile: true,
+});
 await m.goto(URL, { waitUntil: "load" });
 await settle(m, 4000);
 await m.screenshot({ path: `${OUT}/07-mobile-hero.png` });
