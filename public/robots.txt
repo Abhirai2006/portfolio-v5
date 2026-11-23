@@ -26,4 +26,4 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-Sitemap: https://portfolio.abhirai2006.workers.dev/sitemap.xml
+Sitemap: https://portfoli0.abhirai2006.workers.dev/sitemap.xml
