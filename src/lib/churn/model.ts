@@ -9,7 +9,8 @@ const INTERNET_ADDONS: Column[] = [
   "StreamingMovies",
 ];
 
-const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, Number.isFinite(v) ? v : lo));
+const clamp = (v: number, lo: number, hi: number) =>
+  Math.min(hi, Math.max(lo, Number.isFinite(v) ? v : lo));
 
 /** Keep a customer self-consistent: no add-ons without internet, no extra lines without phone, sane numbers. */
 export function normalizeCustomer(c: Customer): Customer {
@@ -159,7 +160,10 @@ function featureColumns(m: ModelJson): Column[] {
  * SHAP explanation in log-odds: `base` (average model output) plus one contribution per original column.
  * base + sum(parts) equals predictRaw(m, c).
  */
-export function explain(m: ModelJson, c: Customer): { base: number; parts: { column: Column; value: number }[] } {
+export function explain(
+  m: ModelJson,
+  c: Customer,
+): { base: number; parts: { column: Column; value: number }[] } {
   const x = encode(m, c);
   const phi = new Array<number>(x.length).fill(0);
   let base = 0;
