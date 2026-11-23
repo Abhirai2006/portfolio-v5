@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Nav } from "@/components/portfolio/Nav";
 import { mailto, CONTACT_EMAIL } from "@/lib/contact";
 import { MAIN_ARCS, SIDE_STORIES } from "@/lib/projects";
-import { QuickFacts } from "@/components/v5/QuickFacts";
+import { QuickFacts } from "@/sections/QuickFacts";
 import ogCover from "@/assets/og-cover.jpg.asset.json";
 
 import { SITE } from "@/lib/site";
@@ -39,11 +39,19 @@ export const Route = createFileRoute("/resume")({
           name: "Abhishek Rai A",
           jobTitle: "Aspiring Machine Learning Engineer",
           url: `${SITE}/resume`,
-          address: { "@type": "PostalAddress", addressLocality: "Mysuru", addressRegion: "Karnataka", addressCountry: "IN" },
-          alumniOf: { "@type": "CollegeOrUniversity", name: "Mysore University School of Engineering" },
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Mysuru",
+            addressRegion: "Karnataka",
+            addressCountry: "IN",
+          },
+          alumniOf: {
+            "@type": "CollegeOrUniversity",
+            name: "Mysore University School of Engineering",
+          },
           knowsLanguage: ["Tulu", "Kannada", "Hindi", "English"],
           sameAs: [
-             SITE,
+            SITE,
             "https://github.com/Abhirai2006",
             "https://www.linkedin.com/in/abhishek-rai-a-00067238b/",
           ],
@@ -59,7 +67,10 @@ function ResumePage() {
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main className="mx-auto max-w-3xl px-6 pt-32 pb-24 print:max-w-none print:px-0 print:pt-0 print:pb-0 print:text-[11px] print:leading-snug">
-        <Link to="/" className="text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-primary print:hidden">
+        <Link
+          to="/"
+          className="text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-primary print:hidden"
+        >
           ← Back to portfolio
         </Link>
 
@@ -70,20 +81,44 @@ function ResumePage() {
             <span className="font-semibold text-foreground">Seeking ML internships</span>
           </p>
           <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm font-mono text-muted-foreground">
-            <a className="hover:text-primary" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-            <a className="hover:text-primary" href="https://github.com/Abhirai2006" target="_blank" rel="noreferrer">github.com/Abhirai2006</a>
-            <a className="hover:text-primary" href="https://www.linkedin.com/in/abhishek-rai-a-00067238b/" target="_blank" rel="noreferrer">linkedin.com/in/abhishek-rai-a</a>
+            <a className="hover:text-primary" href={`mailto:${CONTACT_EMAIL}`}>
+              {CONTACT_EMAIL}
+            </a>
+            <a
+              className="hover:text-primary"
+              href="https://github.com/Abhirai2006"
+              target="_blank"
+              rel="noreferrer"
+            >
+              github.com/Abhirai2006
+            </a>
+            <a
+              className="hover:text-primary"
+              href="https://www.linkedin.com/in/abhishek-rai-a-00067238b/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              linkedin.com/in/abhishek-rai-a
+            </a>
           </div>
           <div className="mt-6 flex flex-wrap gap-3 print:hidden">
-            <a href={mailto("internship")} className="rounded-full border-2 border-line bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90">
+            <a
+              href={mailto("internship")}
+              className="rounded-none border-2 border-line bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90"
+            >
               Hire me →
             </a>
-            <a href={PDF} target="_blank" rel="noreferrer" className="rounded-full border border-border px-5 py-2.5 text-sm hover:border-primary hover:text-primary">
+            <a
+              href={PDF}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-none border border-border px-5 py-2.5 text-sm hover:border-primary hover:text-primary"
+            >
               PDF version ↗
             </a>
             <button
               onClick={() => window.print()}
-              className="rounded-full border border-border px-5 py-2.5 text-sm hover:border-primary hover:text-primary"
+              className="rounded-none border border-border px-5 py-2.5 text-sm hover:border-primary hover:text-primary"
             >
               Print
             </button>
@@ -92,9 +127,10 @@ function ResumePage() {
 
         <Block title="Profile">
           <p className="text-muted-foreground leading-relaxed">
-             B.E. student in Artificial Intelligence &amp; Machine Learning in the fifth semester with a 9.44/10 average GPA.
-             Recently finished a 4-week (~120 hour) Core AI &amp; ML internship at Bluemind Solutions, where he
-             shipped a Customer Churn Intelligence System with LightGBM and Streamlit.
+            B.E. student in Artificial Intelligence &amp; Machine Learning in the fifth semester
+            with a 9.44/10 average GPA. Recently finished a 4-week (~120 hour) Core AI &amp; ML
+            internship at Bluemind Solutions, where he shipped a Customer Churn Intelligence System
+            with LightGBM and Streamlit.
           </p>
         </Block>
 
@@ -114,7 +150,7 @@ function ResumePage() {
           <Row
             left="B.E. in Artificial Intelligence & Machine Learning"
             right="2024 to 2028"
-             sub="Mysore University School of Engineering · Average GPA 9.44 / 10 · V Semester"
+            sub="Mysore University School of Engineering · Average GPA 9.44 / 10 · V Semester"
           />
           <p className="-mt-2 mb-4 font-mono text-xs text-muted-foreground">
             Semester GPA: 1st 9.400 · 2nd 9.300 · 3rd 9.227 · 4th 9.818 · Average 9.436
@@ -127,10 +163,38 @@ function ResumePage() {
         </Block>
 
         <Block title="Skills">
-           <SkillRow label="Proficient" items={["Python", "NumPy", "Pandas", "Scikit-learn (Pipelines, ColumnTransformer, CV)", "Git", "Linear Algebra", "Calculus"]} />
-           <SkillRow label="Intermediate" items={["XGBoost", "LightGBM", "Matplotlib / Seaborn", "Streamlit", "SQL", "DSA", "Probability & Statistics"]} />
-           <SkillRow label="Learning / Basics" items={["PyTorch", "FastAPI", "Discrete Mathematics"]} />
-          <SkillRow label="Web" items={["React", "TypeScript", "TanStack Start", "Supabase", "Tailwind CSS"]} />
+          <SkillRow
+            label="Proficient"
+            items={[
+              "Python",
+              "NumPy",
+              "Pandas",
+              "Scikit-learn (Pipelines, ColumnTransformer, CV)",
+              "Git",
+              "Linear Algebra",
+              "Calculus",
+            ]}
+          />
+          <SkillRow
+            label="Intermediate"
+            items={[
+              "XGBoost",
+              "LightGBM",
+              "Matplotlib / Seaborn",
+              "Streamlit",
+              "SQL",
+              "DSA",
+              "Probability & Statistics",
+            ]}
+          />
+          <SkillRow
+            label="Learning / Basics"
+            items={["PyTorch", "FastAPI", "Discrete Mathematics"]}
+          />
+          <SkillRow
+            label="Web"
+            items={["React", "TypeScript", "TanStack Start", "Supabase", "Tailwind CSS"]}
+          />
         </Block>
 
         <Block title="Projects">
@@ -145,11 +209,15 @@ function ResumePage() {
                   >
                     {p.title}
                     {p.client ? " (paid client project)" : ""}{" "}
-                    <span className="text-xs font-mono text-muted-foreground print:hidden">· episode →</span>
+                    <span className="text-xs font-mono text-muted-foreground print:hidden">
+                      · episode →
+                    </span>
                   </Link>
                   <span className="text-xs font-mono text-muted-foreground">{p.year}</span>
                 </div>
-                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{p.caseStudy.summary}</p>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                  {p.caseStudy.summary}
+                </p>
                 <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs font-mono text-muted-foreground">
                   {p.metrics.map((m) => (
                     <li key={m.label}>
@@ -157,15 +225,23 @@ function ResumePage() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-1 text-xs font-mono text-muted-foreground print:hidden">{p.caseStudy.stack.join(" · ")}</div>
+                <div className="mt-1 text-xs font-mono text-muted-foreground print:hidden">
+                  {p.caseStudy.stack.join(" · ")}
+                </div>
               </div>
             ))}
             <div>
-              <h3 className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Also built</h3>
+              <h3 className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                Also built
+              </h3>
               <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                 {SIDE_STORIES.map((p) => (
                   <li key={p.slug}>
-                    <Link to="/projects/$slug" params={{ slug: p.slug }} className="font-semibold text-foreground hover:text-primary">
+                    <Link
+                      to="/projects/$slug"
+                      params={{ slug: p.slug }}
+                      className="font-semibold text-foreground hover:text-primary"
+                    >
                       {p.title}
                     </Link>
                     : {p.hook}
@@ -182,8 +258,9 @@ function ResumePage() {
 
         <Block title="How I work">
           <p className="text-muted-foreground leading-relaxed">
-            Night owl, ships fast, iterates in public. I use AI copilots deliberately for the web layer so my own hours
-            go into the algorithms and the maths. Goal: one small ML system shipped every month.
+            Night owl, ships fast, iterates in public. I use AI copilots deliberately for the web
+            layer so my own hours go into the algorithms and the maths. Goal: one small ML system
+            shipped every month.
           </p>
         </Block>
       </main>
@@ -215,10 +292,15 @@ function Row({ left, right, sub }: { left: string; right: string; sub: string })
 function SkillRow({ label, items }: { label: string; items: string[] }) {
   return (
     <div className="grid sm:grid-cols-[130px_1fr] gap-2">
-      <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground pt-1">{label}</div>
+      <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground pt-1">
+        {label}
+      </div>
       <div className="flex flex-wrap gap-2">
         {items.map((i) => (
-          <span key={i} className="rounded-md bg-secondary border border-border px-2.5 py-0.5 text-sm font-mono">
+          <span
+            key={i}
+            className="rounded-md bg-secondary border border-border px-2.5 py-0.5 text-sm font-mono"
+          >
             {i}
           </span>
         ))}
