@@ -641,7 +641,14 @@ const ALL: ProjectEntry[] = [
         "Live at ro-bio.hub-muse.workers.dev, deployed on every push to main.",
         "192 unit tests cover the arm maths, the sumo physics and the site logic.",
       ],
-      stack: ["TanStack Start", "React 19", "three.js", "Cloudflare Workers", "Durable Objects", "Vitest"],
+      stack: [
+        "TanStack Start",
+        "React 19",
+        "three.js",
+        "Cloudflare Workers",
+        "Durable Objects",
+        "Vitest",
+      ],
     },
   },
   {
@@ -717,8 +724,10 @@ const ALL: ProjectEntry[] = [
       { value: "6", label: "C++ programs: OOP and operator overloading" },
     ],
     caseStudy: {
-      summary: "A cleaned-up, corrected set of IV-semester lab programs, shared for every MUSE student.",
-      problem: "Lab manuals had errors, and students copied programs that didn't run. A corrected, organised set saves everyone the guesswork.",
+      summary:
+        "A cleaned-up, corrected set of IV-semester lab programs, shared for every MUSE student.",
+      problem:
+        "Lab manuals had errors, and students copied programs that didn't run. A corrected, organised set saves everyone the guesswork.",
       constraints: ["Must follow the syllabus topics.", "Each program has to run as written."],
       built: [
         "Operating Systems in C and Python: FCFS, SJF and priority scheduling, producer-consumer with semaphores, MFT and MVT, first, best and worst fit.",
