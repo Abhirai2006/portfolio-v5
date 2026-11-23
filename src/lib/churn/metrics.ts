@@ -6,7 +6,11 @@ export type ScoredRow = { y: 0 | 1; p: number; monthly: number };
  * customer; recoverable assumes `retention` (35% by default, an assumption, not a measurement) are saved.
  */
 export function metricsAt(rows: ScoredRow[], threshold: number, retention = 0.35) {
-  let tp = 0, fp = 0, fn = 0, tn = 0, monthlyAtRisk = 0;
+  let tp = 0,
+    fp = 0,
+    fn = 0,
+    tn = 0,
+    monthlyAtRisk = 0;
   for (const r of rows) {
     const flag = r.p >= threshold;
     if (flag) monthlyAtRisk += r.monthly;
@@ -34,14 +38,15 @@ export function metricsAt(rows: ScoredRow[], threshold: number, retention = 0.35
 export function rocAuc(rows: { y: 0 | 1; p: number }[]): number {
   const sorted = rows.map((r, i) => ({ ...r, i })).sort((a, b) => a.p - b.p);
   const ranks = new Array<number>(sorted.length);
-  for (let i = 0; i < sorted.length; ) {
+  for (let i = 0; i < sorted.length;) {
     let j = i;
     while (j + 1 < sorted.length && sorted[j + 1].p === sorted[i].p) j++;
     const avg = (i + j) / 2 + 1;
     for (let k = i; k <= j; k++) ranks[k] = avg;
     i = j + 1;
   }
-  let pos = 0, rankSum = 0;
+  let pos = 0,
+    rankSum = 0;
   sorted.forEach((r, k) => {
     if (r.y === 1) {
       pos++;
