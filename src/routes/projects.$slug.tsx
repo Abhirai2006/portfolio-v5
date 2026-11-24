@@ -2,31 +2,35 @@ import { useState } from "react";
 import { firstShotUrl, pickShot, type Shot } from "@/lib/shots";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { getProject, PROJECTS, type ProjectEntry } from "@/lib/projects";
-import { Nav } from "@/components/portfolio/Nav";
 import { mailto } from "@/lib/contact";
-import { Panel, SpeedLines } from "@/components/art/primitives";
-import { KIND_META } from "@/sections/kinds";
-
+import { PageNav, Footer } from "@/components/comic/Chrome";
 import { SITE } from "@/lib/site";
 
+const KIND_LABEL: Record<ProjectEntry["kind"], string> = {
+  ml: "ML Engineer",
+  product: "Product Builder",
+  algo: "Problem Solver",
+  practice: "Practice",
+};
+
 function ShotGrid({ title, shots }: { title: string; shots: Shot[] }) {
-  const light = false; // single ink theme
   const [failed, setFailed] = useState<string[]>([]);
   const urls = shots
-    .map((shot) => pickShot(shot, light, failed))
+    .map((shot) => pickShot(shot, false, failed))
     .filter((u): u is string => u !== null);
   if (urls.length === 0) return null;
   return (
-    <div className="mt-14 grid sm:grid-cols-2 gap-4">
+    <div className="shots">
       {urls.map((src, i) => (
-        <img
-          key={src}
-          src={src}
-          alt={`${title} screenshot ${i + 1}`}
-          loading="lazy"
-          onError={() => setFailed((f) => (f.includes(src) ? f : [...f, src]))}
-          className={`rounded-xl border-2 border-line w-full object-cover shadow-[5px_5px_0_var(--panel-shadow)] ${i === 0 ? "sm:col-span-2" : ""}`}
-        />
+        <figure key={src} style={i === 0 ? { gridColumn: "1 / -1" } : undefined}>
+          <img
+            src={src}
+            alt={`${title} screenshot ${i + 1}`}
+            loading="lazy"
+            decoding="async"
+            onError={() => setFailed((f) => (f.includes(src) ? f : [...f, src]))}
+          />
+        </figure>
       ))}
     </div>
   );
@@ -86,7 +90,12 @@ export const Route = createFileRoute("/projects/$slug")({
                 "@type": "BreadcrumbList",
                 itemListElement: [
                   { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
-                  { "@type": "ListItem", position: 2, name: "The Arcs", item: `${SITE}/#arcs` },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Enter the system",
+                    item: `${SITE}/#system`,
+                  },
                   { "@type": "ListItem", position: 3, name: p.title, item: url },
                 ],
               }),
@@ -104,204 +113,165 @@ function CaseStudyPage() {
   const i = PROJECTS.findIndex((o) => o.slug === p.slug);
   const prev = PROJECTS[i - 1];
   const next = PROJECTS[i + 1];
-  const meta = KIND_META[p.kind];
-
   return (
-    <div className="min-h-screen bg-ink text-paper">
-      <Nav plate={`EP. ${i + 1}`} />
-      <main className="mx-auto max-w-4xl px-4 pb-24 pt-28 sm:px-6 sm:pt-32">
-        <Link to="/" hash="products" className="hud-link text-grey-4 hover:text-paper">
-          ← Back to the volumes
-        </Link>
-
-        <Panel as="article" className="mt-6 p-6 sm:p-10">
-          <SpeedLines className="opacity-10" />
-          <div className="relative">
-            <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-widest">
-              <span className="border border-paper px-2 py-0.5 text-paper">{`Ep. ${i + 1}`}</span>
-              <span aria-hidden="true" className="text-base">
-                {meta.piece}
-              </span>
-              <span className="text-muted-foreground">
-                {meta.label} · {p.tag} · {p.year}
-              </span>
-              {p.client && (
-                <span className="border border-orange-fire px-2 py-0.5 text-orange-core">
-                  Paid client project
+    <div className="page">
+      <PageNav />
+      <main className="page-wrap">
+        <article>
+          {/* Live site + GitHub first, before anything else (DESIGN.md §5 beat 10) */}
+          <div className="case-actions" aria-label="Project links">
+            {p.live && (
+              <a className="btn-ink primary" href={p.live} target="_blank" rel="noreferrer">
+                {p.client ? "Live demo ↗" : "Live site ↗"}
+              </a>
+            )}
+            {p.repo && (
+              <a className="btn-ink" href={p.repo} target="_blank" rel="noreferrer">
+                GitHub ↗
+              </a>
+            )}
+            {p.pendingRepo &&
+              (p.pendingRepo.isPublic ? (
+                <a className="btn-ink" href={p.pendingRepo.url} target="_blank" rel="noreferrer">
+                  {p.pendingRepo.label} ↗
+                </a>
+              ) : (
+                <span className="btn-ink" aria-disabled="true">
+                  {p.pendingRepo.label}: internship repo going public soon
                 </span>
-              )}
-            </div>
-            <h1 className="mt-4 font-display text-[clamp(3rem,9vw,7.5rem)] leading-[0.86] text-paper">
-              {p.title}
-            </h1>
-            <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{cs.summary}</p>
-            {p.client && <p className="mt-2 text-sm">Client: {p.client.name}</p>}
+              ))}
+            {!p.live && !p.repo && (
+              <span className="btn-ink" aria-disabled="true">
+                Private project: no public link
+              </span>
+            )}
+            <a className="btn-ink" href="/">
+              ← Back to the story
+            </a>
+          </div>
 
-            <dl className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              {p.metrics.map((m) => (
-                <div key={m.label} className="border-2 border-paper p-4">
-                  <dt className="sr-only">{m.label}</dt>
-                  <dd className="font-display text-5xl">{m.value}</dd>
-                  <dd className="mt-1 text-xs text-muted-foreground">{m.label}</dd>
+          <p className="page-kicker">
+            {`Ep. ${i + 1}`} · {KIND_LABEL[p.kind]} · {p.tag} · {p.year}
+            {p.client && (
+              <span className="badge" style={{ marginLeft: 10 }}>
+                Paid client project
+              </span>
+            )}
+          </p>
+          <h1 className="page-title">{p.title}</h1>
+          <p className="page-lede">{cs.summary}</p>
+          {p.client && <p>Client: {p.client.name}</p>}
+
+          <dl className="metrics">
+            {p.metrics.map((m) => (
+              <div key={m.label}>
+                <dt className="sr-only">{m.label}</dt>
+                <dd style={{ margin: 0 }}>
+                  <b>{m.value}</b>
+                  <span>{m.label}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+
+          <ShotGrid title={p.title} shots={p.images ?? []} />
+
+          {p.prequel && (
+            <div className="ink-box" style={{ margin: "24px 0" }}>
+              <p className="page-kicker">Prequel</p>
+              <h2>
+                Before {p.title}, there was {p.prequel.title}
+              </h2>
+              <p>{p.prequel.story}</p>
+              <a href={p.prequel.repo} target="_blank" rel="noreferrer">
+                {p.prequel.title} on GitHub (
+                {p.prequel.repo.replace("https://github.com/Abhirai2006/", "")}) ↗
+              </a>
+            </div>
+          )}
+
+          {p.snippet && (
+            <figure style={{ margin: "24px 0" }}>
+              <figcaption className="page-kicker">{p.snippet.title}</figcaption>
+              <pre className="code-block">{p.snippet.lines.join("\n")}</pre>
+            </figure>
+          )}
+
+          <div className="prose">
+            <h2>The problem</h2>
+            <p>{cs.problem}</p>
+            <h2>Constraints</h2>
+            <ul>
+              {cs.constraints.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
+            <h2>What was built</h2>
+            <ul>
+              {cs.built.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
+            <h2>Trade-offs</h2>
+            <div className="grid-2">
+              {cs.tradeoffs.map((t) => (
+                <div key={t.choice} className="ink-box">
+                  <h3>{t.choice}</h3>
+                  <p style={{ margin: 0 }}>{t.why}</p>
                 </div>
               ))}
-            </dl>
-
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              {p.slug === "customer-churn-intelligence-system" && (
-                <Link to="/" hash="ml" className="ink-btn">
-                  Try the model live →
-                </Link>
-              )}
-              {p.live && (
-                <a href={p.live} target="_blank" rel="noreferrer" className="ink-btn">
-                  {p.client ? "Live demo →" : "Live site →"}
-                </a>
-              )}
-              {p.repo && (
-                <a href={p.repo} target="_blank" rel="noreferrer" className="ink-btn ink-btn-ghost">
-                  View code
-                </a>
-              )}
-              {p.pendingRepo &&
-                (p.pendingRepo.isPublic ? (
-                  <a
-                    href={p.pendingRepo.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="ink-btn ink-btn-ghost"
-                  >
-                    {p.pendingRepo.label}
-                  </a>
-                ) : (
-                  <span className="border-2 border-dashed border-grey-2 px-4 py-2 text-xs text-grey-4">
-                    {p.pendingRepo.label}: internship repo going public soon
-                  </span>
-                ))}
             </div>
+            <h2>Outcome</h2>
+            <ul>
+              {cs.outcome.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
+            <h2>Stack</h2>
+            <ul className="chips">
+              {cs.stack.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
           </div>
-        </Panel>
 
-        <ShotGrid title={p.title} shots={p.images ?? []} />
-
-        {p.prequel && (
-          <Panel className="mt-10 p-6">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-              Prequel
-            </p>
-            <h2 className="mt-2 font-display text-2xl font-extrabold">
-              Before {p.title}, there was {p.prequel.title}
-            </h2>
-            <p className="mt-3 leading-relaxed text-muted-foreground">{p.prequel.story}</p>
-            <a
-              href={p.prequel.repo}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-3 inline-block hud-link text-paper"
-            >
-              {p.prequel.title} on GitHub →
+          <div
+            className="ink-box"
+            style={{
+              marginTop: 40,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 16,
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <div>
+              <h2 style={{ margin: 0 }}>Want the long version?</h2>
+              <p style={{ margin: 0 }}>Happy to walk through the decisions live.</p>
+            </div>
+            <a className="btn-ink primary" href={mailto("internship")}>
+              Email Abhishek
             </a>
-          </Panel>
-        )}
-
-        {p.snippet && (
-          <div className="mt-10 overflow-auto border-2 border-paper bg-ink p-6 shadow-[6px_6px_0_var(--grey-2)] font-mono text-[12px] sm:text-sm">
-            <div className="mb-3 text-[10px] uppercase tracking-widest text-grey-4">
-              {p.snippet.title}
-            </div>
-            <pre className="whitespace-pre-wrap leading-relaxed text-blue-core">
-              {p.snippet.lines.join("\n")}
-            </pre>
           </div>
-        )}
 
-        <Section title="The problem">
-          <p className="leading-relaxed text-muted-foreground">{cs.problem}</p>
-        </Section>
-        <Section title="Constraints">
-          <Bullets items={cs.constraints} />
-        </Section>
-        <Section title="What was built">
-          <Bullets items={cs.built} />
-        </Section>
-        <Section title="Trade-offs">
-          <div className="space-y-4">
-            {cs.tradeoffs.map((t) => (
-              <Panel key={t.choice} className="p-5">
-                <div className="font-display text-lg font-bold">{t.choice}</div>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t.why}</p>
-              </Panel>
-            ))}
-          </div>
-        </Section>
-        <Section title="Outcome">
-          <Bullets items={cs.outcome} />
-        </Section>
-        <Section title="Stack">
-          <ul className="flex flex-wrap gap-2">
-            {cs.stack.map((t) => (
-              <li key={t} className="border border-grey-2 px-3 py-1 font-hud text-[11px]">
-                {t}
-              </li>
-            ))}
-          </ul>
-        </Section>
-
-        <Panel className="mt-16 flex flex-wrap items-center justify-between gap-4 p-6">
-          <div>
-            <div className="font-display text-xl font-bold">Want the long version?</div>
-            <p className="text-sm text-muted-foreground">
-              Happy to walk through the decisions live.
-            </p>
-          </div>
-          <a href={mailto("internship")} className="ink-btn">
-            Email Abhishek →
-          </a>
-        </Panel>
-
-        <nav aria-label="More episodes" className="mt-12 grid gap-4 sm:grid-cols-2">
-          {prev && (
-            <Link to="/projects/$slug" params={{ slug: prev.slug }} className="map-card">
-              <div className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{`← Ep. ${i}`}</div>
-              <div className="mt-1 font-display text-lg font-bold">{prev.title}</div>
-            </Link>
-          )}
-          {next && (
-            <Link
-              to="/projects/$slug"
-              params={{ slug: next.slug }}
-              className="webtoon-panel block p-4 text-right hover:-translate-y-0.5 sm:col-start-2"
-            >
-              <div className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{`Ep. ${i + 2} →`}</div>
-              <div className="mt-1 font-display text-lg font-bold">{next.title}</div>
-            </Link>
-          )}
-        </nav>
+          <nav aria-label="More episodes" className="pager">
+            {prev ? (
+              <Link to="/projects/$slug" params={{ slug: prev.slug }} className="btn-ink">
+                ← Ep. {i}: {prev.title}
+              </Link>
+            ) : (
+              <span />
+            )}
+            {next && (
+              <Link to="/projects/$slug" params={{ slug: next.slug }} className="btn-ink">
+                Ep. {i + 2}: {next.title} →
+              </Link>
+            )}
+          </nav>
+        </article>
       </main>
+      <Footer />
     </div>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="mt-14">
-      <h2 className="font-display text-[clamp(2.2rem,5vw,3.6rem)] text-paper">{title}</h2>
-      <div className="mt-4">{children}</div>
-    </section>
-  );
-}
-
-function Bullets({ items }: { items: string[] }) {
-  return (
-    <ul className="space-y-3">
-      {items.map((t) => (
-        <li key={t} className="flex gap-3 text-muted-foreground leading-relaxed">
-          <span aria-hidden="true" className="text-blue-core">
-            ▸
-          </span>
-          <span>{t}</span>
-        </li>
-      ))}
-    </ul>
   );
 }
