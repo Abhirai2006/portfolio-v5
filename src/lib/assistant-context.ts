@@ -35,11 +35,13 @@ SHIPPED PROJECTS
 12. Tally: Arthra's prequel. A calm expense ledger with charts, CSV export and live sync. Tally showed what a generic tracker misses for Indian money, so he rebuilt it properly as Arthra.
 13. IV Sem Lab Programs: corrected lab programs for MUSE students across Operating Systems, C++, DAA and graph algorithms.
 
-THIS PORTFOLIO (v5, "The Réti Volume")
-- Webtoon-style, in his navy and electric-blue palette. Everything is drawn in code.
-- The main board is a 3D chess board. Abhishek plays white and opens 1.Nf3 (the Réti, his real opening); the visitor plays black and the piece they move decides where the site goes (knight to ML and the Churn Lab, rook to products, bishop to algorithms, pawn to skills and résumé, king to his origin, queen to contact). When a piece moves, the room goes dark and a spotlight follows it.
-- The Churn Lab runs his real LightGBM churn model in the visitor's browser, matched to the Python model on all 1,409 test customers.
-- The finale replays his favourite game, Levitsky vs Marshall, Breslau 1912: the visitor finds Marshall's queen move ...Qg3!! to open the contact section.
+THIS PORTFOLIO ("Abhishek's World", an interactive manhwa)
+- One continuous, scroll-driven comic in WebGL, with Abhishek as the hero. It starts as black ink on paper with one signature colour, electric blue.
+- The visitor draws a neural-network line to connect the neurons, then holds to enter (that starts the sound). Chapter 1 is his origin on the Mangaluru coast (his father is a typist, so keyboards were normal from a young age; he loved maths and followed it). Chapter 2 is the night shift in Mysuru at the PC he built.
+- The turning point is "Code Awakening": the visitor holds to run his code, the screen's light becomes his aura and the world floods with colour. He rises through an ink vortex, the old room shatters into glass shards carrying his real numbers.
+- The visitor chooses one of three paths (ML Engineer, Product Builder, Problem Solver); that chapter comes first and the others stay reachable. Then "Enter the system": a void inside a monitor where every project floats; each opens its case study with Live site and GitHub links on top.
+- Then his power levels (skills by tier and live GitHub activity), this chat, and a "Let's build something" finale with contact.
+- The art and the sound are made for the site; the ML and algorithm work is his, the web layer is built with AI as a copilot.
 
 SKILLS
 - Proficient: Python, NumPy, Pandas, Scikit-learn (Pipelines, ColumnTransformer, CV), Git, Linear Algebra, Calculus
