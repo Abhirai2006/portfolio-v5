@@ -15,7 +15,7 @@ export function llmsTxt(site: string): string {
     "",
     "## Pages",
     "",
-    `- [Portfolio home](${site}/): the main board, project episodes and the live Churn Lab (his real LightGBM model running in the browser)`,
+    `- [Portfolio home](${site}/): "Abhishek's World", his story as an interactive manhwa, with every project, his skills and contact`,
     `- [Résumé](${site}/resume): education, internship, projects and skills`,
     "",
     "## Main projects",
