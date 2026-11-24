@@ -1,25 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import { homeJsonLd } from "@/lib/seo";
 import { SITE } from "@/lib/site";
 import portrait from "@/assets/abhishek-portrait.jpg.asset.json";
 import ogCover from "@/assets/og-cover.jpg.asset.json";
-import { Hud } from "@/hud/Hud";
-import { BoardSection } from "@/sections/BoardSection";
-import { Chapters } from "@/sections/Chapters";
-import { MapSection } from "@/sections/MapSection";
-import { NameShot } from "@/sections/NameShot";
-import { Welcome } from "@/sections/Welcome";
-import { Stage } from "@/world/Stage";
+import { StaticWebtoon } from "@/components/comic/StaticWebtoon";
+import { Experience } from "@/components/comic/Experience";
+import { Finale, Footer } from "@/components/comic/Chrome";
 
-/*
- * "Abhishek's World" (docs/DESIGN.md). Every word below is server-rendered HTML (crawlable, works without JS);
- * the WebGL world, loader and cinematics are added on the client by <Stage />.
- */
-
-const TITLE = "Abhishek Rai A · Aspiring ML Engineer, Mysuru";
+const TITLE = "Abhishek Rai A · Aspiring ML Engineer, Mysuru · Abhishek's World";
 const DESCRIPTION =
-  "Abhishek Rai A is an aspiring machine learning engineer in Mysuru (B.E. AI & ML, GPA 9.44) looking for ML internships. Projects, live ML demo and contact.";
+  "Abhishek Rai A is an aspiring machine learning engineer in Mysuru (B.E. AI & ML, GPA 9.44) looking for ML internships. His story as an interactive manhwa: projects, résumé and contact.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,33 +25,28 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: `${SITE}${ogCover.url}` },
     ],
     links: [{ rel: "canonical", href: `${SITE}/` }],
-    scripts: homeJsonLd(SITE, portrait.url).map((block) => ({
-      type: "application/ld+json",
-      children: JSON.stringify(block),
-    })),
+    scripts: [
+      // Before first paint: if the WebGL comic will run, hide the static webtoon now (no flash before hydration).
+      {
+        children:
+          "try{var c=document.createElement('canvas');if(c.getContext('webgl2')&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!/tier=static/.test(location.search))document.documentElement.classList.add('stage-on')}catch(e){}",
+      },
+      ...homeJsonLd(SITE, portrait.url).map((block) => ({
+        type: "application/ld+json",
+        children: JSON.stringify(block),
+      })),
+    ],
   }),
   component: Home,
 });
 
-/** The world (canvas, loader, cinematics) only exists in the browser. */
-function ClientStage() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  return mounted ? <Stage /> : null;
-}
-
 function Home() {
   return (
-    <>
-      <Hud />
-      <main id="main" className="relative">
-        <Welcome />
-        <NameShot />
-        <BoardSection />
-        <MapSection />
-        <Chapters />
-      </main>
-      <ClientStage />
-    </>
+    <main id="story" className="home">
+      <StaticWebtoon />
+      <Experience />
+      <Finale />
+      <Footer />
+    </main>
   );
 }
