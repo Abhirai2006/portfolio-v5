@@ -49,8 +49,8 @@ const CSP = [
   "default-src 'self'",
   // TanStack Start writes small inline scripts for hydration, so inline is required here.
   "script-src 'self' 'unsafe-inline'",
-  "style-src 'self' 'unsafe-inline'",
-  "font-src 'self' data:", // fonts are self-hosted (public/fonts)
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://media.kitsu.app https://media.kitsu.io",
   "media-src 'self' blob:",
   "connect-src 'self' https://*.supabase.co https://*.lovable.cloud https://github-contributions-api.jogruber.de https://api.github.com",
