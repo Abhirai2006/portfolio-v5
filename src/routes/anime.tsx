@@ -1,30 +1,25 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { shelf, allGenres, totalEpisodes, totalMinutes } from "@/data/anime";
-import { CaseDetail } from "@/components/anime/CaseDetail";
-import { CurvedShelf } from "@/components/anime/CurvedShelf";
-import { HallOfFame } from "@/components/anime/HallOfFame";
-import { QuoteWall } from "@/components/anime/QuoteWall";
-import { ShelfQuiz } from "@/components/anime/ShelfQuiz";
-import { WatchDNA } from "@/components/anime/WatchDNA";
-import { RecommendDialog } from "@/components/anime/RecommendDialog";
-import { Nav } from "@/components/portfolio/Nav";
-import "@/anime.css";
 import {
+  addRecommendation,
   listRecommendations,
   moodSearch,
+  searchCatalogue,
   voteRecommendation,
+  type CatalogueHit,
   type Recommendation,
 } from "@/lib/anime.functions";
 import { nf, minutesToSpan } from "@/lib/format";
 import { markVoted, votedIds, voterKey } from "@/lib/voter";
-
+import { PageNav, Footer } from "@/components/comic/Chrome";
 import { SITE } from "@/lib/site";
+
 const OG_IMAGE = `${SITE}/anime-og-cover.jpg`;
 const TITLE = "Abhi's Anime Shelf | 3,600+ Episodes Watched";
 const DESC =
-  "A 3D shelf of every anime Abhi has watched: 3,600+ episodes as cases you can pull off the rack, a mood curator, and an open slot for your recommendation.";
+  "Every anime Abhi has watched, as a manga-shelf of covers: 3,600+ episodes, a mood curator, and an open slot for your recommendation.";
 
 export const Route = createFileRoute("/anime")({
   head: () => ({
@@ -44,7 +39,7 @@ export const Route = createFileRoute("/anime")({
       { property: "og:image", content: OG_IMAGE },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "A curved wall of anime cases in a dark lit room" },
+      { property: "og:image:alt", content: "The anime shelf" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
@@ -99,14 +94,20 @@ function ShelfPage() {
   const [moodLine, setMoodLine] = useState("");
   const [moodBusy, setMoodBusy] = useState(false);
   const [moodError, setMoodError] = useState<string | null>(null);
-  const [recOpen, setRecOpen] = useState(false);
   const [recs, setRecs] = useState<Recommendation[]>([]);
-
   const [mine, setMine] = useState<string[]>([]);
+  const [q, setQ] = useState("");
+  const [hits, setHits] = useState<CatalogueHit[]>([]);
+  const [pickHit, setPickHit] = useState<CatalogueHit | null>(null);
+  const [recName, setRecName] = useState("");
+  const [recNote, setRecNote] = useState("");
+  const [recMsg, setRecMsg] = useState("");
 
   const askMood = useServerFn(moodSearch);
   const fetchRecs = useServerFn(listRecommendations);
   const castVote = useServerFn(voteRecommendation);
+  const search = useServerFn(searchCatalogue);
+  const add = useServerFn(addRecommendation);
 
   const loadRecs = useCallback(() => {
     fetchRecs({})
@@ -145,35 +146,7 @@ function ShelfPage() {
   }, [filter, moodIds]);
 
   const span = minutesToSpan(totalMinutes);
-  const longest = useMemo(
-    () => [...shelf].sort((a, b) => b.episodesWatched - a.episodesWatched)[0]!,
-    [],
-  );
-
-  const open = visible.find((a) => a.id === openId) ?? shelf.find((a) => a.id === openId) ?? null;
-
-  const step = (dir: 1 | -1) => {
-    const list = visible.length ? visible : shelf;
-    const i = list.findIndex((a) => a.id === openId);
-    const next = list[(i + dir + list.length) % list.length];
-    if (next) setOpenId(next.id);
-  };
-
-  const pullRandom = useCallback(() => {
-    const list = visible.length ? visible : shelf;
-    const pick = list[Math.floor(Math.random() * list.length)];
-    if (pick) setOpenId(pick.id);
-  }, [visible]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null;
-      if (t && /^(INPUT|TEXTAREA)$/.test(t.tagName)) return;
-      if (e.key === "r" || e.key === "R") pullRandom();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [pullRandom]);
+  const open = shelf.find((a) => a.id === openId) ?? null;
 
   async function runMood(e: React.FormEvent) {
     e.preventDefault();
@@ -196,264 +169,306 @@ function ShelfPage() {
     }
   }
 
-  function clearAll() {
-    setMoodIds(null);
-    setMoodLine("");
-    setMoodError(null);
-    setMood("");
-    setFilter({ genre: null, format: "all" });
+  async function runSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (!q.trim()) return;
+    setHits(await search({ data: { q: q.trim() } }).catch(() => []));
   }
 
-  const filtering = moodIds !== null || filter.genre !== null || filter.format !== "all";
+  async function submitRec(e: React.FormEvent) {
+    e.preventDefault();
+    if (!pickHit) return;
+    const res = await add({
+      data: {
+        catalogueId: pickHit.catalogueId,
+        title: pickHit.title,
+        romaji: pickHit.romaji,
+        cover: pickHit.cover,
+        year: pickHit.year,
+        episodes: pickHit.episodes,
+        synopsis: pickHit.synopsis,
+        recommender: recName.trim() || "Anonymous",
+        note: recNote.trim() || null,
+      },
+    }).catch(() => ({ ok: false as const, reason: "Could not save that right now." }));
+    if (res.ok) {
+      setRecMsg("Added to the shelf. Thank you!");
+      setPickHit(null);
+      setHits([]);
+      setQ("");
+      loadRecs();
+    } else setRecMsg(res.reason);
+  }
 
   return (
-    <div className="anime-page anime-grain room-light min-h-screen overflow-x-clip">
-      <Nav />
-
-      {/* ---- hero ---- */}
-      <section className="mx-auto max-w-7xl px-6 pb-10 pt-32 sm:px-10 sm:pt-40">
-        <p className="font-hand text-2xl text-accent">not a list.</p>
-        <h1 className="mt-1 font-bebas text-[clamp(3.2rem,11vw,9rem)] leading-[0.82] tracking-wide text-foreground">
-          A SHELF OF
-          <br />
-          <span className="bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-            EVERYTHING I&apos;VE WATCHED
-          </span>
-        </h1>
-        <p className="mt-6 max-w-xl text-balance text-base leading-relaxed text-muted-foreground">
-          Every series I&apos;ve finished lives here as a case in motion. Scroll through the arc,
-          then click a cover to pull it forward.
+    <div className="page">
+      <PageNav />
+      <main className="page-wrap">
+        <p className="page-kicker">Side quest · the anime shelf</p>
+        <h1 className="page-title">Abhi's anime shelf</h1>
+        <p className="page-lede">
+          {shelf.length} series and films, {nf.format(totalEpisodes)} episodes, about{" "}
+          {nf.format(span.days)} days of watching. One Piece is the all-time favourite.
         </p>
 
-        <dl className="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4">
-          <Stat k="Titles" v={nf.format(shelf.length)} sub="on the rack" />
-          <Stat k="Episodes" v={nf.format(totalEpisodes)} sub="watched end to end" />
-          <Stat k="Hours" v={nf.format(span.hours)} sub={`${span.days} days of screen`} />
-          <Stat k="Longest" v={nf.format(longest.episodesWatched)} sub={longest.title} />
-        </dl>
-      </section>
-
-      {/* ---- controls ---- */}
-      <section className="mx-auto max-w-7xl px-6 sm:px-10">
-        <form onSubmit={runMood} className="flex flex-col gap-3 sm:flex-row">
-          <div className="relative flex-1">
+        <form
+          onSubmit={runMood}
+          className="ink-box"
+          style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "end", marginBottom: 16 }}
+        >
+          <div className="form-row" style={{ flex: "1 1 260px", margin: 0 }}>
+            <label htmlFor="mood">Ask the curator for a mood</label>
             <input
+              id="mood"
               value={mood}
               onChange={(e) => setMood(e.target.value)}
-              placeholder="Tell me a mood: 'something that will wreck me', 'dumb fun after a bad day'…"
-              className="w-full rounded-md border border-border bg-input px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-primary"
-              aria-label="Describe a mood"
+              placeholder="Something that makes me cry, but in a good way"
+              maxLength={160}
             />
           </div>
-          <button
-            type="submit"
-            disabled={moodBusy}
-            className="rounded-md bg-primary px-6 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
-          >
-            {moodBusy ? "Thinking…" : "Ask the shelf"}
+          <button className="btn-ink primary" type="submit" disabled={moodBusy}>
+            {moodBusy ? "Thinking…" : "Curate"}
           </button>
-          <button
-            type="button"
-            onClick={pullRandom}
-            className="liquid-glass rounded-md px-6 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-accent transition-colors hover:text-foreground"
-            title="Pull a random case (press R)"
-          >
-            🎲 Surprise me
-          </button>
+          {moodIds && (
+            <button type="button" className="btn-ink" onClick={() => setMoodIds(null)}>
+              Clear
+            </button>
+          )}
+          {moodLine && moodIds && (
+            <p style={{ flexBasis: "100%", margin: 0, font: "italic 400 20px var(--swash)" }}>
+              {moodLine}
+            </p>
+          )}
+          {moodError && (
+            <p role="alert" style={{ flexBasis: "100%", margin: 0 }}>
+              {moodError}
+            </p>
+          )}
         </form>
 
-        {moodLine && moodIds && (
-          <p className="mt-4 font-hand text-xl text-accent">
-            &ldquo;{moodLine}&rdquo;<span className="caret ml-0.5">|</span>
-          </p>
-        )}
-        {moodError && <p className="mt-4 text-sm text-destructive">{moodError}</p>}
-
-        <div className="mt-6 flex flex-wrap items-center gap-2">
-          <Chip
-            active={filter.format === "all" && !filter.genre && !moodIds}
-            onClick={clearAll}
-            label="Everything"
-          />
-          <Chip
-            active={filter.format === "tv"}
-            onClick={() => {
-              setMoodIds(null);
-              setFilter((f) => ({ ...f, format: f.format === "tv" ? "all" : "tv" }));
-            }}
-            label="Series"
-          />
-          <Chip
-            active={filter.format === "movie"}
-            onClick={() => {
-              setMoodIds(null);
-              setFilter((f) => ({ ...f, format: f.format === "movie" ? "all" : "movie" }));
-            }}
-            label="Films"
-          />
-          <span className="mx-1 h-4 w-px bg-border" />
+        <div className="filters" role="group" aria-label="Filter">
+          {(["all", "tv", "movie"] as const).map((f) => (
+            <button
+              key={f}
+              type="button"
+              aria-pressed={filter.format === f}
+              onClick={() => setFilter((x) => ({ ...x, format: f }))}
+            >
+              {f === "all" ? "All" : f === "tv" ? "Series" : "Films"}
+            </button>
+          ))}
+          <span style={{ width: 12 }} />
           {allGenres.map((g) => (
-            <Chip
+            <button
               key={g}
-              active={filter.genre === g}
-              onClick={() => {
-                setMoodIds(null);
-                setFilter((f) => ({ ...f, genre: f.genre === g ? null : g }));
-              }}
-              label={g}
-            />
+              type="button"
+              aria-pressed={filter.genre === g}
+              onClick={() => setFilter((x) => ({ ...x, genre: x.genre === g ? null : g }))}
+            >
+              {g}
+            </button>
           ))}
         </div>
 
-        <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-          {filtering
-            ? `${visible.length} of ${shelf.length} pulled forward`
-            : `${shelf.length} cases · left to right, longest runs first`}
-        </p>
-      </section>
-
-      {/* ---- scroll-driven collection ---- */}
-      <div className="mt-4">
-        <CurvedShelf items={visible} onOpen={setOpenId} />
-      </div>
-
-      <QuoteWall onOpen={setOpenId} />
-      <HallOfFame onOpen={setOpenId} />
-      <WatchDNA />
-      <ShelfQuiz onOpen={setOpenId} />
-
-      {/* ---- recommendations ---- */}
-      <section className="border-t border-border/60 bg-card/20">
-        <div className="mx-auto max-w-7xl px-6 py-20 sm:px-10">
-          <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+        {open && (
+          <section
+            className="ink-box"
+            aria-live="polite"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 160px) 1fr",
+              gap: 18,
+              marginBottom: 22,
+            }}
+          >
+            {open.cover ? (
+              <img
+                src={open.cover}
+                alt={`${open.title} cover`}
+                style={{ width: "100%", border: "2px solid var(--ink)" }}
+              />
+            ) : (
+              <span />
+            )}
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">
-                The empty slot
+              <p className="page-kicker">
+                {open.studio}
+                {open.year ? ` · ${open.year}` : ""} ·{" "}
+                {open.status === "watching" ? "Watching now" : "Completed"}
               </p>
-              <h2 className="mt-2 font-bebas text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-wide">
-                RECOMMEND ME ONE
-              </h2>
-              <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-                There&apos;s always room for one more case. Search any anime ever made, leave your
-                name and a line about why. It stays on the shelf until I watch it. Back the ones you
-                want me to watch first; the most wanted rise to the front.
+              <h2>{open.title}</h2>
+              <p>{open.synopsis}</p>
+              <p>
+                <b>{nf.format(open.episodesWatched)}</b> episodes watched · {open.genres.join(", ")}
               </p>
+              <button type="button" className="btn-ink" onClick={() => setOpenId(null)}>
+                Close
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setRecOpen(true)}
-              className="liquid-glass rounded-md px-6 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-accent transition-colors hover:text-foreground"
-            >
-              + Add to the shelf
-            </button>
-          </div>
+          </section>
+        )}
 
-          {recs.length > 0 ? (
-            <div className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
-              {recs.map((r) => (
-                <article
-                  key={r.id}
-                  className="drift group rounded-lg border border-border bg-card/70 p-3 transition-colors hover:border-primary/70"
-                >
-                  <div className="aspect-[2/3] w-full overflow-hidden rounded bg-secondary">
-                    {r.cover ? (
-                      <img
-                        src={r.cover}
-                        alt={`${r.title} key art`}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center p-2 text-center font-bebas text-lg">
-                        {r.title}
+        <ul className="anime-grid" aria-label="The shelf">
+          {visible.map((a) => (
+            <li key={a.id} className="anime-card">
+              <button
+                type="button"
+                onClick={() => setOpenId(a.id)}
+                style={{ all: "unset", cursor: "pointer", display: "block" }}
+                aria-label={`Open ${a.title}`}
+              >
+                {a.cover ? (
+                  <img
+                    src={a.cover}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width={300}
+                    height={450}
+                  />
+                ) : (
+                  <span
+                    style={{ display: "block", aspectRatio: "2/3", background: "var(--paper-2)" }}
+                  />
+                )}
+                <p>
+                  {a.title}
+                  <small>
+                    {a.format === "movie" ? "Film" : `${a.episodesWatched} ep`}
+                    {a.status === "watching" ? " · watching" : ""}
+                  </small>
+                </p>
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <div className="grid-2" style={{ marginTop: 40, alignItems: "start" }}>
+          <section className="ink-box" aria-labelledby="rec-h">
+            <h2 id="rec-h">Recommend one</h2>
+            <form onSubmit={runSearch} style={{ display: "flex", gap: 8 }}>
+              <label htmlFor="rq" className="sr-only">
+                Search the catalogue
+              </label>
+              <input
+                id="rq"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search an anime…"
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  border: "1.5px solid var(--ink)",
+                  padding: "10px 12px",
+                }}
+              />
+              <button className="btn-ink" type="submit">
+                Search
+              </button>
+            </form>
+            {hits.length > 0 && (
+              <ul style={{ listStyle: "none", padding: 0, maxHeight: 220, overflow: "auto" }}>
+                {hits.map((h) => (
+                  <li key={h.catalogueId}>
+                    <button
+                      type="button"
+                      className="btn-ink"
+                      style={{
+                        width: "100%",
+                        justifyContent: "flex-start",
+                        marginTop: 6,
+                        boxShadow: "none",
+                      }}
+                      aria-pressed={pickHit?.catalogueId === h.catalogueId}
+                      onClick={() => setPickHit(h)}
+                    >
+                      {h.title} {h.year ? `(${h.year})` : ""}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {pickHit && (
+              <form onSubmit={submitRec} style={{ marginTop: 12 }}>
+                <p>
+                  Recommending <b>{pickHit.title}</b>
+                </p>
+                <div className="form-row">
+                  <label htmlFor="rn">Your name</label>
+                  <input
+                    id="rn"
+                    value={recName}
+                    onChange={(e) => setRecName(e.target.value)}
+                    maxLength={60}
+                  />
+                </div>
+                <div className="form-row">
+                  <label htmlFor="rnote">Why he should watch it (optional)</label>
+                  <textarea
+                    id="rnote"
+                    value={recNote}
+                    onChange={(e) => setRecNote(e.target.value)}
+                    maxLength={400}
+                    rows={3}
+                  />
+                </div>
+                <button type="submit" className="btn-ink primary">
+                  Put it on the shelf
+                </button>
+              </form>
+            )}
+            {recMsg && <p role="status">{recMsg}</p>}
+          </section>
+          <section aria-labelledby="recs-h">
+            <h2 id="recs-h" style={{ font: "800 28px var(--display)", margin: "0 0 12px" }}>
+              Recommended by readers
+            </h2>
+            {recs.length === 0 ? (
+              <p>No recommendations yet.</p>
+            ) : (
+              <ul style={{ listStyle: "none", padding: 0, display: "grid", gap: 10 }}>
+                {[...recs]
+                  .sort((a, b) => b.votes - a.votes)
+                  .map((r) => (
+                    <li
+                      key={r.id}
+                      className="ink-box"
+                      style={{ padding: 12, display: "flex", gap: 12, alignItems: "center" }}
+                    >
+                      {r.cover && (
+                        <img
+                          src={r.cover}
+                          alt=""
+                          width={48}
+                          height={72}
+                          style={{ border: "1.5px solid var(--ink)" }}
+                        />
+                      )}
+                      <div style={{ flex: 1 }}>
+                        <b>{r.title}</b>
+                        <br />
+                        <small>
+                          from {r.recommender}
+                          {r.note ? `: "${r.note}"` : ""}
+                        </small>
                       </div>
-                    )}
-                  </div>
-                  <h3 className="mt-3 truncate text-sm font-semibold">{r.title}</h3>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {r.year ?? "?"}
-                    {r.episodes ? ` · ${r.episodes} ep` : ""}
-                  </p>
-                  {r.note && (
-                    <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-muted-foreground">
-                      &ldquo;{r.note}&rdquo;
-                    </p>
-                  )}
-                  <p className="mt-2 font-hand text-base text-accent">by {r.recommender}</p>
-                  <button
-                    type="button"
-                    onClick={() => vote(r.id)}
-                    disabled={mine.includes(r.id)}
-                    aria-label={`Back ${r.title}`}
-                    className={[
-                      "mt-3 flex w-full items-center justify-center gap-2 rounded-md border px-3 py-2 font-mono text-[10px] uppercase tracking-widest transition-colors",
-                      mine.includes(r.id)
-                        ? "border-primary bg-primary/15 text-primary"
-                        : "border-border bg-secondary text-muted-foreground hover:border-primary/60 hover:text-foreground",
-                    ].join(" ")}
-                  >
-                    <span aria-hidden>▲</span>
-                    {r.votes} {mine.includes(r.id) ? "backed" : "back it"}
-                  </button>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <p className="mt-12 font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-              The slot is empty. Be the first.
-            </p>
-          )}
+                      <button
+                        type="button"
+                        className="btn-ink"
+                        onClick={() => vote(r.id)}
+                        disabled={mine.includes(r.id)}
+                        aria-label={`Vote for ${r.title}`}
+                      >
+                        ▲ {r.votes}
+                      </button>
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </section>
         </div>
-      </section>
-
-      <footer className="border-t border-border/60 py-10 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-          {nf.format(totalEpisodes)} episodes · {nf.format(span.hours)} hours · still going
-        </p>
-        <Link to="/" className="mt-3 inline-block font-hand text-xl text-primary hover:underline">
-          back to the portfolio
-        </Link>
-      </footer>
-
-      {open && (
-        <CaseDetail
-          anime={open}
-          collectionEpisodes={totalEpisodes}
-          onClose={() => setOpenId(null)}
-          onPrev={() => step(-1)}
-          onNext={() => step(1)}
-        />
-      )}
-      {recOpen && <RecommendDialog onClose={() => setRecOpen(false)} onSaved={loadRecs} />}
+      </main>
+      <Footer />
     </div>
-  );
-}
-
-function Stat({ k, v, sub }: { k: string; v: string; sub: string }) {
-  return (
-    <div>
-      <dt className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-        {k}
-      </dt>
-      <dd className="mt-1 font-bebas text-5xl leading-none tracking-wide text-foreground">{v}</dd>
-      <dd className="mt-1 truncate text-xs text-muted-foreground">{sub}</dd>
-    </div>
-  );
-}
-
-function Chip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        "rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest transition-colors",
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-secondary text-muted-foreground hover:border-primary/60 hover:text-foreground",
-      ].join(" ")}
-    >
-      {label}
-    </button>
   );
 }
