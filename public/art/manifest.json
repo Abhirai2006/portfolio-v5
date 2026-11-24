@@ -1,0 +1,189 @@
+{
+ "coast": {
+  "w": 1600,
+  "h": 1000,
+  "layers": [
+   "sky",
+   "sea",
+   "land",
+   "boy",
+   "palms",
+   "fx"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "hands": {
+  "w": 800,
+  "h": 800,
+  "layers": [
+   "back",
+   "hands"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "boy-eyes": {
+  "w": 1400,
+  "h": 480,
+  "layers": [
+   "eyes"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "maths": {
+  "w": 1200,
+  "h": 1400,
+  "layers": [
+   "sky",
+   "ground"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "mysuru": {
+  "w": 1600,
+  "h": 1000,
+  "layers": [
+   "sky",
+   "city",
+   "roof"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "room": {
+  "w": 1600,
+  "h": 1000,
+  "layers": [
+   "back",
+   "desk",
+   "figure",
+   "fx"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "keys": {
+  "w": 800,
+  "h": 800,
+  "layers": [
+   "keys"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "gpu": {
+  "w": 800,
+  "h": 800,
+  "layers": [
+   "gpu"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "eyes": {
+  "w": 1400,
+  "h": 480,
+  "layers": [
+   "eyes"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "monitor": {
+  "w": 1600,
+  "h": 1000,
+  "layers": [
+   "bezel",
+   "hands"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "rise": {
+  "w": 900,
+  "h": 1300,
+  "layers": [
+   "hero"
+  ],
+  "modes": [
+   "colour"
+  ]
+ },
+ "dawn": {
+  "w": 1600,
+  "h": 1000,
+  "layers": [
+   "sky"
+  ],
+  "modes": [
+   "colour"
+  ]
+ },
+ "altar": {
+  "w": 1600,
+  "h": 1000,
+  "layers": [
+   "sky",
+   "slab"
+  ],
+  "modes": [
+   "colour"
+  ]
+ },
+ "ml-sky": {
+  "w": 1600,
+  "h": 1000,
+  "layers": [
+   "sky",
+   "ledge"
+  ],
+  "modes": [
+   "colour"
+  ]
+ },
+ "frame": {
+  "w": 1200,
+  "h": 820,
+  "layers": [
+   "bezel"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ },
+ "portrait": {
+  "w": 800,
+  "h": 1000,
+  "layers": [
+   "face"
+  ],
+  "modes": [
+   "ink",
+   "colour"
+  ]
+ }
+}
