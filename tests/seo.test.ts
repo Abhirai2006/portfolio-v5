@@ -15,7 +15,7 @@ test("/llms.txt introduces Abhishek and links the key pages", () => {
 
 test("home JSON-LD is a ProfilePage about a Person with GitHub and LinkedIn", () => {
   const blocks = homeJsonLd(SITE, "/media/abhishek-portrait.jpg");
-  const page = blocks.find((b) => b["@type"] === "ProfilePage") as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any -- JSON-LD is untyped
+  const page = blocks.find((b) => b["@type"] === "ProfilePage") as Record<string, any>;
   expect(page).toBeDefined();
   expect(page.mainEntity["@type"]).toBe("Person");
   expect(page.mainEntity.sameAs).toContain("https://github.com/Abhirai2006");
