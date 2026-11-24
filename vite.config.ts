@@ -40,25 +40,23 @@ export default defineConfig(({ command, mode }) => {
         },
       }),
       ...(command === "build"
-        ? [
-            nitro(
-              process.env.NITRO_PRESET
-                ? { preset: process.env.NITRO_PRESET }
-                : {
-                    defaultPreset: "cloudflare-module",
-                    cloudflare: {
-                      wrangler: {
-                        // Must match the Worker name in the Cloudflare dashboard.
-                        // Must match the Worker name in the Cloudflare dashboard (see docs/DEPLOY.md).
-                        name: process.env.CF_WORKER_NAME ?? "portfoli0",
-                        // Keep variables/secrets set in the dashboard on every deploy.
-                        keep_vars: true,
-                        observability: { enabled: true },
-                      },
+        ? [nitro(
+            process.env.NITRO_PRESET
+              ? { preset: process.env.NITRO_PRESET }
+              : {
+                  defaultPreset: "cloudflare-module",
+                  cloudflare: {
+                    wrangler: {
+                      // Must match the Worker name in the Cloudflare dashboard.
+                      // Must match the Worker name in the Cloudflare dashboard (see docs/DEPLOY.md).
+                      name: process.env.CF_WORKER_NAME ?? "portfoli0",
+                      // Keep variables/secrets set in the dashboard on every deploy.
+                      keep_vars: true,
+                      observability: { enabled: true },
                     },
                   },
-            ),
-          ]
+                },
+          )]
         : []),
       viteReact(),
     ],
