@@ -3,40 +3,38 @@
     {
       "path": "/",
       "a11yChecks": true,
+      "comicCheck": true,
       "settleMs": 2500,
-      "labCheck": true,
-      "chessCheck": true,
-      "cinematicChecks": true,
       "mustContain": [
         "Abhishek Rai A",
         "looking for ML internships",
-        "Skip intro",
-        "WELCOME TO ABHISHEK",
-        "Choose a piece. It knows the way.",
-        "KNIGHT",
-        "ML + CHURN LAB",
-        "Where are you going?",
-        "THE MODEL RUNS HERE.",
-        "FIVE VOLUMES.",
-        "ALGORITHMS, DRAWN.",
-        "FROM PAWN TO QUEEN.",
-        "ORIGIN.",
-        "LET'S TALK.",
         "Customer Churn Intelligence System",
         "MUSE Students Voice",
         "Arthra",
         "Ro-Bio",
         "Earth &amp; Ethos",
-        "Churn Lab",
-        "not proven causes",
-        "match the Python model",
-        "Breslau, 1912",
-        "Quick facts",
+        "O(patience)",
+        "Skip to contact",
+        "Skip to the work",
         "https://github.com/Abhirai2006",
         "https://www.linkedin.com/in/abhishek-rai-a-00067238b/",
-        "Contact / Hire",
-        "About Abhishek",
-        "Skills + Résumé"
+        "Chapter 1 · Origin",
+        "Mangaluru",
+        "typist",
+        "Chapter 2 · The night shift",
+        "9.44",
+        "Code Awakening",
+        "Choose your path",
+        "ML Engineer",
+        "Product Builder",
+        "Problem Solver",
+        "Enter the system",
+        "Power levels",
+        "Ask Abhishek",
+        "SOMETHING",
+        "TO BE CONTINUED",
+        "Anime shelf",
+        "Reviews"
       ]
     },
     {
@@ -52,24 +50,40 @@
     },
     {
       "path": "/reviews",
-      "mustContain": ["Abhishek"]
+      "mustContain": [
+        "Abhishek"
+      ]
     },
     {
       "path": "/anime",
-      "mustContain": ["anime"],
+      "mustContain": [
+        "anime"
+      ],
       "settleMs": 2500
     },
     {
       "path": "/thank-you",
-      "mustContain": ["Abhishek"]
+      "mustContain": [
+        "Abhishek"
+      ]
     },
     {
       "path": "/projects/arthra",
-      "mustContain": ["Arthra", "Tally", "tally-my-cents", "Ep. 3"]
+      "mustContain": [
+        "Arthra",
+        "Tally",
+        "tally-my-cents",
+        "Ep. 3"
+      ]
     },
     {
       "path": "/projects/ro-bio",
-      "mustContain": ["Ro-Bio", "192", "https://ro-bio.hub-muse.workers.dev/"]
+      "mustContain": [
+        "Ro-Bio",
+        "192",
+        "https://ro-bio.hub-muse.workers.dev/",
+        "Live site"
+      ]
     },
     {
       "path": "/projects/earth-and-ethos",
@@ -83,7 +97,7 @@
       "path": "/projects/customer-churn-intelligence-system",
       "mustContain": [
         "going public soon",
-        "Try the model live",
+        "GitHub",
         "telco-churn-intelligence-system",
         "BreadcrumbList"
       ]
