@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Nav } from "@/components/portfolio/Nav";
 import { mailto, CONTACT_EMAIL } from "@/lib/contact";
 import { MAIN_ARCS, SIDE_STORIES } from "@/lib/projects";
-import { QuickFacts } from "@/sections/QuickFacts";
+import { QUICK_FACTS } from "@/lib/facts";
+import { PageNav } from "@/components/comic/Chrome";
 import ogCover from "@/assets/og-cover.jpg.asset.json";
-
 import { SITE } from "@/lib/site";
+
 const PDF = "https://drive.google.com/file/d/1OaO_nbj7jrrgJY1JGp3CSh798Vh_rf8w/view?usp=sharing";
 
 export const Route = createFileRoute("/resume")({
@@ -64,69 +64,55 @@ export const Route = createFileRoute("/resume")({
 
 function ResumePage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
-      <main className="mx-auto max-w-3xl px-6 pt-32 pb-24 print:max-w-none print:px-0 print:pt-0 print:pb-0 print:text-[11px] print:leading-snug">
-        <Link
-          to="/"
-          className="text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-primary print:hidden"
-        >
-          ← Back to portfolio
-        </Link>
-
-        <header className="mt-8 border-b border-border pb-8 print:mt-0 print:pb-3">
-          <h1 className="font-display text-4xl sm:text-5xl font-semibold">Abhishek Rai A</h1>
-          <p className="mt-2 text-muted-foreground">
+    <div className="page resume">
+      <PageNav />
+      <main className="page-wrap" style={{ maxWidth: 860 }}>
+        <header className="ink-box" style={{ marginBottom: 28 }}>
+          <p className="page-kicker">Résumé</p>
+          <h1 className="page-title" style={{ fontSize: "clamp(40px, 7vw, 72px)" }}>
+            Abhishek Rai A
+          </h1>
+          <p style={{ margin: "0 0 10px" }}>
             Aspiring Machine Learning Engineer · Mysuru, Karnataka, India ·{" "}
-            <span className="font-semibold text-foreground">Seeking ML internships</span>
+            <b>Seeking ML internships</b>
           </p>
-          <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm font-mono text-muted-foreground">
-            <a className="hover:text-primary" href={`mailto:${CONTACT_EMAIL}`}>
-              {CONTACT_EMAIL}
-            </a>
-            <a
-              className="hover:text-primary"
-              href="https://github.com/Abhirai2006"
-              target="_blank"
-              rel="noreferrer"
-            >
+          <p
+            style={{
+              margin: 0,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "4px 16px",
+              fontFamily: "var(--mono)",
+              fontSize: 13,
+            }}
+          >
+            <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+            <a href="https://github.com/Abhirai2006" target="_blank" rel="noreferrer">
               github.com/Abhirai2006
             </a>
             <a
-              className="hover:text-primary"
               href="https://www.linkedin.com/in/abhishek-rai-a-00067238b/"
               target="_blank"
               rel="noreferrer"
             >
               linkedin.com/in/abhishek-rai-a
             </a>
-          </div>
-          <div className="mt-6 flex flex-wrap gap-3 print:hidden">
-            <a
-              href={mailto("internship")}
-              className="rounded-none border-2 border-line bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90"
-            >
-              Hire me →
+          </p>
+          <div className="case-actions no-print" style={{ margin: "16px 0 0" }}>
+            <a href={mailto("internship")} className="btn-ink primary">
+              Email about an internship
             </a>
-            <a
-              href={PDF}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-none border border-border px-5 py-2.5 text-sm hover:border-primary hover:text-primary"
-            >
+            <a href={PDF} target="_blank" rel="noreferrer" className="btn-ink">
               PDF version ↗
             </a>
-            <button
-              onClick={() => window.print()}
-              className="rounded-none border border-border px-5 py-2.5 text-sm hover:border-primary hover:text-primary"
-            >
+            <button type="button" className="btn-ink" onClick={() => window.print()}>
               Print
             </button>
           </div>
         </header>
 
         <Block title="Profile">
-          <p className="text-muted-foreground leading-relaxed">
+          <p>
             B.E. student in Artificial Intelligence &amp; Machine Learning in the fifth semester
             with a 9.44/10 average GPA. Recently finished a 4-week (~120 hour) Core AI &amp; ML
             internship at Bluemind Solutions, where he shipped a Customer Churn Intelligence System
@@ -134,9 +120,13 @@ function ResumePage() {
           </p>
         </Block>
 
-        <div className="mt-8 print:hidden">
-          <QuickFacts />
-        </div>
+        <Block title="Quick facts">
+          <ul>
+            {QUICK_FACTS.map((f) => (
+              <li key={f}>{f}</li>
+            ))}
+          </ul>
+        </Block>
 
         <Block title="Experience">
           <Row
@@ -152,7 +142,7 @@ function ResumePage() {
             right="2024 to 2028"
             sub="Mysore University School of Engineering · Average GPA 9.44 / 10 · V Semester"
           />
-          <p className="-mt-2 mb-4 font-mono text-xs text-muted-foreground">
+          <p style={{ fontFamily: "var(--mono)", fontSize: 12.5, margin: "-4px 0 12px" }}>
             Semester GPA: 1st 9.400 · 2nd 9.300 · 3rd 9.227 · 4th 9.818 · Average 9.436
           </p>
           <Row
@@ -198,69 +188,63 @@ function ResumePage() {
         </Block>
 
         <Block title="Projects">
-          <div className="space-y-6 print:space-y-2.5">
-            {MAIN_ARCS.map((p) => (
-              <div key={p.slug}>
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <Link
-                    to="/projects/$slug"
-                    params={{ slug: p.slug }}
-                    className="font-display text-lg font-bold hover:text-primary"
-                  >
-                    {p.title}
-                    {p.client ? " (paid client project)" : ""}{" "}
-                    <span className="text-xs font-mono text-muted-foreground print:hidden">
-                      · episode →
-                    </span>
-                  </Link>
-                  <span className="text-xs font-mono text-muted-foreground">{p.year}</span>
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                  {p.caseStudy.summary}
-                </p>
-                <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs font-mono text-muted-foreground">
-                  {p.metrics.map((m) => (
-                    <li key={m.label}>
-                      <span className="text-primary">{m.value}</span> {m.label}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-1 text-xs font-mono text-muted-foreground print:hidden">
-                  {p.caseStudy.stack.join(" · ")}
-                </div>
-              </div>
-            ))}
-            <div>
-              <h3 className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                Also built
-              </h3>
-              <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                {SIDE_STORIES.map((p) => (
-                  <li key={p.slug}>
-                    <Link
-                      to="/projects/$slug"
-                      params={{ slug: p.slug }}
-                      className="font-semibold text-foreground hover:text-primary"
-                    >
-                      {p.title}
-                    </Link>
-                    : {p.hook}
-                  </li>
-                ))}
-              </ul>
+          {MAIN_ARCS.map((p) => (
+            <div key={p.slug} style={{ marginBottom: 16 }}>
+              <p
+                style={{
+                  margin: 0,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 10,
+                  flexWrap: "wrap",
+                }}
+              >
+                <Link
+                  to="/projects/$slug"
+                  params={{ slug: p.slug }}
+                  style={{ fontFamily: "var(--display)", fontWeight: 800, fontSize: 20 }}
+                >
+                  {p.title}
+                  {p.client ? " (paid client project)" : ""}
+                </Link>
+                <span style={{ fontFamily: "var(--mono)", fontSize: 12 }}>{p.year}</span>
+              </p>
+              <p style={{ margin: "2px 0" }}>{p.caseStudy.summary}</p>
+              <p style={{ margin: 0, fontFamily: "var(--mono)", fontSize: 12 }}>
+                {p.metrics.map((m) => `${m.value} ${m.label}`).join(" · ")}
+              </p>
             </div>
-          </div>
+          ))}
+          <h3
+            style={{
+              fontFamily: "var(--ui)",
+              fontSize: 12,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+            }}
+          >
+            Also built
+          </h3>
+          <ul>
+            {SIDE_STORIES.map((p) => (
+              <li key={p.slug}>
+                <Link to="/projects/$slug" params={{ slug: p.slug }}>
+                  <b>{p.title}</b>
+                </Link>
+                : {p.hook}
+              </li>
+            ))}
+          </ul>
         </Block>
 
         <Block title="Languages">
-          <p className="text-muted-foreground">Tulu (mother tongue) · Kannada · Hindi · English</p>
+          <p>Tulu (mother tongue) · Kannada · Hindi · English</p>
         </Block>
 
         <Block title="How I work">
-          <p className="text-muted-foreground leading-relaxed">
-            Night owl, ships fast, iterates in public. I use AI copilots deliberately for the web
-            layer so my own hours go into the algorithms and the maths. Goal: one small ML system
-            shipped every month.
+          <p>
+            Night owl, peak hours 10 pm to 6 am. I use AI copilots deliberately for the web layer so
+            my own hours go into the algorithms and the maths.
           </p>
         </Block>
       </main>
@@ -270,41 +254,58 @@ function ResumePage() {
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="mt-10 print:mt-4">
-      <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-primary">{title}</h2>
-      <div className="mt-4 space-y-4">{children}</div>
+    <section style={{ marginTop: 26 }}>
+      <h2
+        className="page-kicker"
+        style={{ borderBottom: "2px solid var(--ink)", paddingBottom: 6 }}
+      >
+        {title}
+      </h2>
+      <div>{children}</div>
     </section>
   );
 }
 
 function Row({ left, right, sub }: { left: string; right: string; sub: string }) {
   return (
-    <div>
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <span className="font-display text-lg">{left}</span>
-        <span className="text-xs font-mono text-muted-foreground">{right}</span>
-      </div>
-      <div className="text-sm text-muted-foreground">{sub}</div>
+    <div style={{ marginBottom: 12 }}>
+      <p
+        style={{
+          margin: 0,
+          display: "flex",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 8,
+        }}
+      >
+        <b style={{ fontFamily: "var(--display)", fontSize: 18 }}>{left}</b>
+        <span style={{ fontFamily: "var(--mono)", fontSize: 12 }}>{right}</span>
+      </p>
+      <p style={{ margin: 0 }}>{sub}</p>
     </div>
   );
 }
 
 function SkillRow({ label, items }: { label: string; items: string[] }) {
   return (
-    <div className="grid sm:grid-cols-[130px_1fr] gap-2">
-      <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground pt-1">
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 140px) 1fr",
+        gap: 8,
+        marginBottom: 8,
+      }}
+    >
+      <b
+        style={{ fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", paddingTop: 4 }}
+      >
         {label}
-      </div>
-      <div className="flex flex-wrap gap-2">
+      </b>
+      <ul className="chips" style={{ margin: 0 }}>
         {items.map((i) => (
-          <span
-            key={i}
-            className="rounded-md bg-secondary border border-border px-2.5 py-0.5 text-sm font-mono"
-          >
-            {i}
-          </span>
+          <li key={i}>{i}</li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
