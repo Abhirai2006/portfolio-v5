@@ -3,13 +3,13 @@ import { homeJsonLd } from "@/lib/seo";
 import { SITE } from "@/lib/site";
 import portrait from "@/assets/abhishek-portrait.jpg.asset.json";
 import ogCover from "@/assets/og-cover.jpg.asset.json";
-import { StaticWebtoon } from "@/components/comic/StaticWebtoon";
-import { Experience } from "@/components/comic/Experience";
-import { Finale, Footer } from "@/components/comic/Chrome";
+import { ForestStory } from "@/components/forest/ForestStory";
+import { ForestExperience } from "@/components/forest/ForestExperience";
+import { Finale, Footer } from "@/components/site/Chrome";
 
 const TITLE = "Abhishek Rai A · Aspiring ML Engineer, Mysuru · Abhishek's World";
 const DESCRIPTION =
-  "Abhishek Rai A is an aspiring machine learning engineer in Mysuru (B.E. AI & ML, GPA 9.44) looking for ML internships. His story as an interactive manhwa: projects, résumé and contact.";
+  "Abhishek Rai A is an aspiring machine learning engineer in Mysuru (B.E. AI & ML, GPA 9.44) looking for ML internships. His story as a walk down through a real rainforest: projects, résumé and contact.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,10 +26,10 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: `${SITE}/` }],
     scripts: [
-      // Before first paint: if the WebGL comic will run, hide the static webtoon now (no flash before hydration).
+      // Before first paint: if the WebGL forest will run, hide the static article now (no flash before hydration).
       {
         children:
-          "try{var c=document.createElement('canvas');if(c.getContext('webgl2')&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!/tier=static/.test(location.search))document.documentElement.classList.add('stage-on')}catch(e){}",
+          "try{var c=document.createElement('canvas');if(c.getContext('webgl2')&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!/tier=static/.test(location.search))document.documentElement.classList.add('forest-on')}catch(e){}",
       },
       ...homeJsonLd(SITE, portrait.url).map((block) => ({
         type: "application/ld+json",
@@ -42,9 +42,12 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   return (
-    <main id="story" className="home">
-      <StaticWebtoon />
-      <Experience />
+    <main id="story" className="home home-forest">
+      <a className="skip-link" href="#contact">
+        Skip to contact
+      </a>
+      <ForestStory />
+      <ForestExperience />
       <Finale />
       <Footer />
     </main>
