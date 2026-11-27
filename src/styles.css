@@ -5,6 +5,7 @@
 @import "@fontsource/dela-gothic-one";
 @import "@fontsource-variable/inter-tight";
 @import "@fontsource-variable/jetbrains-mono";
+@import "./forest/forest.css";
 
 /* ------------------------------------------------------------------ tokens (DESIGN.md §3.2) */
 :root {
