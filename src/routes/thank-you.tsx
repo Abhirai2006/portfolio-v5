@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PageNav, Footer } from "@/components/comic/Chrome";
+import { PageNav, Footer } from "@/components/site/Chrome";
 
 import { SITE } from "@/lib/site";
 
