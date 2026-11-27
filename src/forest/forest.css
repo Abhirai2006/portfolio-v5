@@ -1,0 +1,311 @@
+/* v3 rainforest: tokens, the static article, and the WebGL opening. Fonts: DECISIONS V10 / D19. */
+@import "@fontsource/great-vibes/400.css";
+@import "@fontsource/parisienne/400.css";
+
+:root {
+  --leaf-950: #06120c;
+  --leaf-900: #0b2516;
+  --leaf-700: #1f5a35;
+  --moss: #9fd8a9;
+  --mist: #eef3e6;
+  --dart-blue: #2f7cff;
+  --sun: #ffe2a8;
+  --script-a: "Great Vibes", "Parisienne", cursive;
+  --script-b: "Parisienne", "Great Vibes", cursive;
+}
+
+.home-forest {
+  background: var(--leaf-950);
+  color: var(--mist);
+}
+
+/* ---------------------------------------------------------------- static article (no WebGL / no JS) */
+.forest-static {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 72px var(--gutter, 16px) 48px;
+  font-family: var(--ui);
+  line-height: 1.6;
+  color: var(--mist);
+}
+.fs-hero {
+  min-height: 70vh;
+  display: grid;
+  align-content: center;
+}
+.fs-kicker {
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--moss);
+  margin: 0 0 12px;
+}
+.fs-title {
+  font-weight: 400;
+  font-size: clamp(64px, 14vw, 150px);
+  line-height: 1;
+  margin: 0;
+}
+.script-a {
+  font-family: var(--script-a);
+}
+.script-b {
+  font-family: var(--script-b);
+}
+.fs-sub {
+  font-size: clamp(16px, 2.2vw, 20px);
+  opacity: 0.85;
+}
+.fs-chapter {
+  padding: 40px 0;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+}
+.fs-chapter h2 {
+  font-family: var(--script-b);
+  font-weight: 400;
+  font-size: clamp(36px, 6vw, 56px);
+  margin: 0 0 12px;
+}
+.fs-projects {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+}
+.fs-projects h3 {
+  margin: 0 0 4px;
+  font-size: 19px;
+}
+.forest-static a {
+  color: var(--moss);
+}
+
+/* With the forest running, the article stays for crawlers and screen readers but isn't drawn. */
+.forest-on .forest-static {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- the opening */
+.opening {
+  display: none;
+}
+.forest-on .opening {
+  display: block;
+  position: relative;
+  height: 560vh;
+}
+.op-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--leaf-950);
+}
+.op-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.op-loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  background: var(--leaf-950);
+  transition: opacity 1.2s ease 0.2s, visibility 0s linear 1.4s;
+  z-index: 3;
+}
+.op-loader.is-done {
+  opacity: 0;
+  visibility: hidden;
+}
+.op-loader-word {
+  font-family: var(--script-b);
+  font-size: clamp(34px, 5vw, 52px);
+  color: var(--mist);
+}
+.op-loader-bar {
+  width: min(240px, 60vw);
+  height: 1px;
+  background: rgb(255 255 255 / 0.15);
+  overflow: hidden;
+}
+.op-loader-bar i {
+  display: block;
+  height: 100%;
+  background: var(--moss);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.op-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  font: 500 12px/1 var(--ui);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--mist);
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.6);
+  z-index: 2;
+}
+.op-hint i {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(var(--mist), transparent);
+  animation: op-drip 2.2s ease-in-out infinite;
+}
+@keyframes op-drip {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  51% {
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+/* The species tag follows the frog on screen (positions come from the 3D scene each frame). */
+.op-frog {
+  position: absolute;
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  z-index: 2;
+  pointer-events: none;
+  visibility: hidden;
+}
+.op-frog-line {
+  position: absolute;
+  left: 64px;
+  top: -14px;
+  width: 90px;
+  height: 1px;
+  background: rgb(255 255 255 / 0.7);
+  transform-origin: left;
+  transform: rotate(-32deg);
+}
+.op-frog-text {
+  position: absolute;
+  left: 138px;
+  top: -92px;
+  display: grid;
+  gap: 4px;
+  white-space: nowrap;
+  font-family: var(--ui);
+  color: var(--mist);
+  text-shadow: 0 1px 10px rgb(0 0 0 / 0.7);
+}
+.op-frog-text b {
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.op-frog-text em {
+  font-family: var(--script-b);
+  font-style: normal;
+  font-size: 24px;
+  color: #bcd9ff;
+}
+
+.op-titlewrap {
+  position: absolute;
+  inset: auto 0 12vh 0;
+  text-align: center;
+  padding: 0 var(--gutter, 16px);
+  z-index: 2;
+  pointer-events: none;
+}
+.op-title {
+  margin: 0;
+  font-weight: 400;
+  font-size: clamp(64px, 12vw, 176px);
+  line-height: 1;
+  color: #fffdf5;
+  text-shadow:
+    0 2px 30px rgb(0 20 8 / 0.55),
+    0 0 80px rgb(0 0 0 / 0.35);
+}
+.op-title span {
+  display: inline-block;
+  visibility: hidden;
+}
+.op-sub {
+  margin: 18px auto 0;
+  max-width: 720px;
+  font: 400 clamp(14px, 1.6vw, 18px) / 1.5 var(--ui);
+  letter-spacing: 0.04em;
+  color: var(--mist);
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.8);
+  visibility: hidden;
+}
+
+@media (max-width: 600px) {
+  /* On a narrow screen the tag hangs under the frog instead of beside it. */
+  .op-frog-line {
+    left: 0;
+    top: 34px;
+    width: 1px;
+    height: 46px;
+    transform: none;
+  }
+  .op-frog-text {
+    left: 0;
+    top: 88px;
+    transform: translateX(-50%);
+    justify-items: center;
+    text-align: center;
+  }
+  .op-frog-text em {
+    font-size: 19px;
+  }
+  .op-titlewrap {
+    bottom: 16vh;
+  }
+}
+
+/* ---------------------------------------------------------------- keyboard + finale */
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 20;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: var(--mist);
+  color: var(--leaf-950);
+  font: 500 14px/1 var(--ui);
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 16px;
+}
+.finale-quote {
+  font-family: var(--script-b);
+  font-size: clamp(26px, 4vw, 40px);
+  margin: 8px 0 28px;
+}
