@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { PageNav, Footer } from "@/components/comic/Chrome";
+import { PageNav, Footer } from "@/components/site/Chrome";
 import { supabase } from "@/integrations/supabase/client";
 import { track } from "@/lib/analytics";
 
