@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { mailto, CONTACT_EMAIL } from "@/lib/contact";
 import { MAIN_ARCS, SIDE_STORIES } from "@/lib/projects";
 import { QUICK_FACTS } from "@/lib/facts";
-import { PageNav } from "@/components/comic/Chrome";
+import { PageNav } from "@/components/site/Chrome";
 import ogCover from "@/assets/og-cover.jpg.asset.json";
 import { SITE } from "@/lib/site";
 
