@@ -3,7 +3,7 @@ import { firstShotUrl, pickShot, type Shot } from "@/lib/shots";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { getProject, PROJECTS, type ProjectEntry } from "@/lib/projects";
 import { mailto } from "@/lib/contact";
-import { PageNav, Footer } from "@/components/comic/Chrome";
+import { PageNav, Footer } from "@/components/site/Chrome";
 import { SITE } from "@/lib/site";
 
 const KIND_LABEL: Record<ProjectEntry["kind"], string> = {
