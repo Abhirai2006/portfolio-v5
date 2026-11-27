@@ -34,3 +34,8 @@ dist-ssr
 
 # ChatGPT originals (kept locally; the imported WebP layers in public/art are what ships)
 art-src/incoming/
+
+# local secrets
+.env
+.env.*
+!.env.example
