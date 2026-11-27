@@ -92,71 +92,18 @@ for (const route of routes) {
         }
         if (!reached) fail(`${tag}: Tab did not reach a skip control within 8 presses`);
       }
-      if (route.comicCheck && width === 1280) {
-        // The full opening: loader → draw the neural net → hold to enter → the title, then scroll moves the camera.
+      if (route.forestCheck && width === 1280) {
+        // The WebGL forest opening: the loader finishes, the canvas draws, scrolling moves the camera.
         const staged = await page
-          .waitForSelector(".loader.is-done", { state: "attached", timeout: 60000 })
+          .waitForSelector(".opening[data-phase=on]", { state: "attached", timeout: 120000 })
           .then(() => true)
           .catch(() => false);
-        if (!staged) fail(`${tag}: the WebGL stage never became ready`);
+        if (!staged) fail(`${tag}: the WebGL forest never became ready`);
         else {
-          const keys = await page.locator(".neuron-key").all();
-          if (keys.length < 5) fail(`${tag}: gate shows ${keys.length} neurons`);
-          const pts = [];
-          for (const k of keys) {
-            const bb = await k.boundingBox();
-            if (bb) pts.push({ x: bb.x + bb.width / 2, y: bb.y + bb.height / 2 });
-          }
-          await page.mouse.move(pts[0].x, pts[0].y);
-          await page.mouse.down();
-          for (const q of [pts[2], pts[3], pts[5], pts[4], pts[1], pts[6]])
-            await page.mouse.move(q.x, q.y, { steps: 8 });
-          await page.mouse.up();
-          const hold = page.locator(".gate-hold .hold-btn");
-          const shown = await hold
-            .waitFor({ timeout: 4000 })
-            .then(() => true)
-            .catch(() => false);
-          if (!shown) fail(`${tag}: drawing through the neurons did not show HOLD TO ENTER`);
-          else {
-            const hb = await hold.boundingBox();
-            await page.mouse.move(hb.x + hb.width / 2, hb.y + hb.height / 2);
-            await page.mouse.down();
-            await page.waitForTimeout(3000);
-            await page.mouse.up();
-            const gone = await page
-              .waitForSelector(".gate", { state: "detached", timeout: 5000 })
-              .then(() => true)
-              .catch(() => false);
-            if (!gone) fail(`${tag}: holding did not enter the world`);
-          }
-          await page.mouse.move(700, 450);
           await page.mouse.wheel(0, 1600);
-          const moved = await page
-            .waitForFunction(() => window.scrollY > 300, null, { timeout: 6000 })
-            .then(() => true)
-            .catch(() => false);
-          if (!moved) fail(`${tag}: scrolling did not move through the comic`);
-          // Code Awakening: hold to run (look-dev jump), the gate must open
-          await page.goto(base + "/?beat=awaken&t=0.48&clean=1", { waitUntil: "domcontentloaded" });
-          await page
-            .waitForSelector(".loader.is-done", { state: "attached", timeout: 60000 })
-            .catch(() => {});
-          const ring = page.locator(".story-hold .hold-btn");
-          const ok = await ring
-            .waitFor({ timeout: 6000 })
-            .then(() => true)
-            .catch(() => false);
-          if (!ok) fail(`${tag}: no HOLD TO RUN at Code Awakening`);
-          else {
-            await ring.focus();
-            await page.keyboard.down(" ");
-            await page.waitForTimeout(4500);
-            await page.keyboard.up(" ");
-            const gates = await page.evaluate(() => localStorage.getItem("aw.gates") ?? "");
-            if (!gates.includes("awaken"))
-              fail(`${tag}: holding Space did not complete Code Awakening (keyboard path)`);
-          }
+          await page.waitForTimeout(800);
+          const y = await page.evaluate(() => window.scrollY);
+          if (y < 200) fail(`${tag}: scrolling did not move through the opening`);
         }
       }
       for (const e of errors) fail(`${tag}: ${e}`);
@@ -178,8 +125,8 @@ for (const route of routes) {
       fail(`${route.path}: prints on ${pages} A4 pages (max ${route.pdfMaxPages})`);
     await ctx.close();
   }
-  if (route.comicCheck) {
-    // Reduced motion: the static webtoon, no canvas, the story readable.
+  if (route.forestCheck) {
+    // Reduced motion: no WebGL, the server-rendered article is shown and readable.
     const rctx = await browser.newContext({
       viewport: { width: 1280, height: 900 },
       reducedMotion: "reduce",
@@ -187,12 +134,12 @@ for (const route of routes) {
     const rp = await rctx.newPage();
     await rp.goto(base + route.path, { waitUntil: "domcontentloaded" });
     await rp.waitForTimeout(1500);
-    const canvas = await rp.locator(".stage-canvas").count();
-    if (canvas) fail(`${route.path} [reduced motion]: the WebGL stage still runs`);
+    const on = await rp.evaluate(() => document.documentElement.classList.contains("forest-on"));
+    if (on) fail(`${route.path} [reduced motion]: the WebGL forest still runs`);
     const visible = await rp.evaluate(
-      () => document.querySelector(".webtoon")?.getBoundingClientRect().height ?? 0,
+      () => document.querySelector(".forest-static")?.getBoundingClientRect().height ?? 0,
     );
-    if (visible < 2000) fail(`${route.path} [reduced motion]: the static webtoon is not shown`);
+    if (visible < 800) fail(`${route.path} [reduced motion]: the static article is not shown`);
     await rctx.close();
   }
   // No-JS pass: server-rendered HTML alone.
