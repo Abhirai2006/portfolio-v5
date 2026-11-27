@@ -53,7 +53,7 @@ const CSP = [
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://media.kitsu.app https://media.kitsu.io",
   "media-src 'self' blob:",
-  "connect-src 'self' https://*.supabase.co https://*.lovable.cloud https://github-contributions-api.jogruber.de https://api.github.com",
+  "connect-src 'self' blob: https://*.supabase.co https://*.lovable.cloud https://github-contributions-api.jogruber.de https://api.github.com",
   "worker-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'self'",
