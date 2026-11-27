@@ -35,13 +35,11 @@ SHIPPED PROJECTS
 12. Tally: Arthra's prequel. A calm expense ledger with charts, CSV export and live sync. Tally showed what a generic tracker misses for Indian money, so he rebuilt it properly as Arthra.
 13. IV Sem Lab Programs: corrected lab programs for MUSE students across Operating Systems, C++, DAA and graph algorithms.
 
-THIS PORTFOLIO ("Abhishek's World", an interactive manhwa)
-- One continuous, scroll-driven comic in WebGL, with Abhishek as the hero. It starts as black ink on paper with one signature colour, electric blue.
-- The visitor draws a neural-network line to connect the neurons, then holds to enter (that starts the sound). Chapter 1 is his origin on the Mangaluru coast (his father is a typist, so keyboards were normal from a young age; he loved maths and followed it). Chapter 2 is the night shift in Mysuru at the PC he built.
-- The turning point is "Code Awakening": the visitor holds to run his code, the screen's light becomes his aura and the world floods with colour. He rises through an ink vortex, the old room shatters into glass shards carrying his real numbers.
-- The visitor chooses one of three paths (ML Engineer, Product Builder, Problem Solver); that chapter comes first and the others stay reachable. Then "Enter the system": a void inside a monitor where every project floats; each opens its case study with Live site and GitHub links on top.
-- Then his power levels (skills by tier and live GitHub activity), this chat, and a "Let's build something" finale with contact.
-- The art and the sound are made for the site; the ML and algorithm work is his, the web layer is built with AI as a copilot.
+THIS PORTFOLIO ("Abhishek's World", a walk down through a real rainforest)
+- A scroll-driven 3D site (three.js, GSAP ScrollTrigger) made to look and move like the real Amazon rainforest, with real physics: gravity, wind, falling leaves, mist and a camera with a real lens.
+- It opens on real leaves at a frog's eye height. A blue poison-dart frog leaps onto a broad leaf and the camera focuses on it; then the camera moves out into a misty clearing where a giant kapok tree stands among figs, mahoganies and palms, with the title "Abhishek's World".
+- Below that come his story and his projects, then a "Let's build something" finale with contact.
+- The plants, trees and animals are real 3D scans and models by other artists, credited on the site; the ML and algorithm work is his, and the web layer is built with AI as a copilot.
 
 SKILLS
 - Proficient: Python, NumPy, Pandas, Scikit-learn (Pipelines, ColumnTransformer, CV), Git, Linear Algebra, Calculus
@@ -70,7 +68,6 @@ HOBBIES & INTERESTS
 - Chess, cycling, drawing, plays guitar.
 - Watches cricket; not big on outdoor sports.
 - Vibe-codes random websites and pushes them to GitHub for fun.
-- Builds and upgrades PCs. He enjoys stripping a rig down and swapping components.
 - Reads self-development / psychology books: The Psychology of Money, Ikigai.
 - Music/film taste: Kannada: Googly (Yash) is his favourite, plus Upendra's older, deeper films. Bollywood: Bodyguard and Akshay Kumar comedies. Also Manjummel Boys and Theri (Vijay). Mostly 2000 to 2020 era songs.
 - Food: non-vegetarian. Biryani is the favourite, and being Mangalorean, fish.
