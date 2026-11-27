@@ -13,7 +13,7 @@ import {
 } from "@/lib/anime.functions";
 import { nf, minutesToSpan } from "@/lib/format";
 import { markVoted, votedIds, voterKey } from "@/lib/voter";
-import { PageNav, Footer } from "@/components/comic/Chrome";
+import { PageNav, Footer } from "@/components/site/Chrome";
 import { SITE } from "@/lib/site";
 
 const OG_IMAGE = `${SITE}/anime-og-cover.jpg`;
