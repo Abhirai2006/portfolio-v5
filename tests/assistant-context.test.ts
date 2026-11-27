@@ -11,8 +11,8 @@ test("résumé context knows the projects, this site and the internship ask", ()
     "Earth & Ethos",
     "paid",
     "Tally",
-    "interactive manhwa",
-    "Code Awakening",
+    "real rainforest",
+    "kapok",
     "looking for ML internships",
   ]) {
     expect(RESUME_CONTEXT).toContain(s);
